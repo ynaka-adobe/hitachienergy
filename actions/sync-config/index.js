@@ -131,6 +131,7 @@ async function pushConfig(org, repo, configData, accessToken) {
 
 async function main(params) {
   // CORS preflight
+  // eslint-disable-next-line no-underscore-dangle
   if (params.__ow_method === 'OPTIONS') {
     return {
       statusCode: 204,

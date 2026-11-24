@@ -1,3 +1,4 @@
+/* stylelint-disable selector-class-pattern -- class names come from external/JS-generated markup */
 .target-offer {
   /* Stable hook for VEC / Replace content / cssSelector in Target activities */
   min-height: 0;

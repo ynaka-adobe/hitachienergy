@@ -92,6 +92,7 @@ async function adminPost(action, org, repo, path, token) {
 }
 
 async function main(params) {
+  // eslint-disable-next-line no-underscore-dangle
   if (params.__ow_method === 'OPTIONS') {
     return {
       statusCode: 204,
@@ -118,10 +119,9 @@ async function main(params) {
   }
 
   // paths: comma-separated; empty segment => homepage. Default = homepage only.
-  const paths =
-    typeof params.paths === 'string'
-      ? params.paths.split(',').map((p) => p.trim())
-      : [''];
+  const paths = typeof params.paths === 'string'
+    ? params.paths.split(',').map((p) => p.trim())
+    : [''];
 
   let token = params.accessToken;
   let authError = null;
@@ -144,12 +144,14 @@ async function main(params) {
 
   // Preview each path, then live each path. Report every result.
   const results = [];
+  /* eslint-disable no-restricted-syntax, no-await-in-loop */
   for (const p of paths) {
     results.push(await adminPost('preview', targetOrg, targetRepo, p, token));
   }
   for (const p of paths) {
     results.push(await adminPost('live', targetOrg, targetRepo, p, token));
   }
+  /* eslint-enable no-restricted-syntax, no-await-in-loop */
 
   const allOk = results.every((r) => r.ok);
 
