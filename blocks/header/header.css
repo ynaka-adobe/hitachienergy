@@ -60,6 +60,7 @@ header .nav-brand img {
 
 /* tool links (Login, Contact us): hidden on mobile until the menu opens */
 header .nav-tools {
+  position: relative;
   display: none;
 }
 
@@ -93,16 +94,6 @@ header .nav-auth {
   display: flex;
   align-items: center;
   gap: 12px;
-}
-
-/* greeting fits the top bar on desktop only */
-header .nav-user {
-  display: none;
-  max-width: 20ch;
-  overflow: hidden;
-  font-size: 14px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 header .nav-tools-list a:focus-visible,
@@ -311,10 +302,6 @@ header[aria-expanded='true'] .nav-site {
     text-transform: none;
   }
 
-  header .nav-user {
-    display: block;
-  }
-
   header .nav-tools-list a:hover .nav-label,
   header .nav-tools-list .nav-auth-button:hover .nav-label {
     text-decoration: underline;
@@ -363,4 +350,172 @@ header .nav-skip-link:focus-visible {
 
 main:focus {
   outline: none;
+}
+
+/* profile flyout (signed in) */
+header .nav-avatar {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--color-primary-500);
+  color: var(--color-white);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+header .nav-avatar.large {
+  width: 44px;
+  height: 44px;
+  font-size: 16px;
+}
+
+/* mobile: the avatar stands in for the name, which stays as the button's label */
+header .nav-tools-list li.nav-auth .nav-profile-trigger .nav-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+header .nav-profile-panel {
+  position: fixed;
+  top: 56px;
+  right: 16px;
+  left: 16px;
+  z-index: 3;
+  box-sizing: border-box;
+  padding: 16px;
+  border: var(--border-xs, 1px) solid var(--color-gray-100);
+  background-color: var(--color-white);
+  box-shadow: 0 8px 28px rgb(0 0 0 / 16%);
+  color: var(--color-gray-900);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: left;
+}
+
+header .nav-profile-panel[hidden] {
+  display: none;
+}
+
+header .nav-profile-panel p {
+  margin: 0;
+}
+
+header .nav-profile-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+header .nav-profile-name {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+header .nav-profile-email {
+  color: var(--color-gray-700);
+  word-break: break-all;
+}
+
+header .nav-profile-panel .nav-profile-label {
+  margin-top: 12px;
+  color: var(--color-gray-700);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+header .nav-profile-fields {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 16px;
+  margin: 6px 0 0;
+}
+
+header .nav-profile-fields dt {
+  color: var(--color-gray-700);
+}
+
+header .nav-profile-fields dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+header .nav-tools-list .nav-profile-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+header .nav-profile-groups li {
+  padding: 2px 10px;
+  border: 1px solid var(--color-gray-100);
+  border-radius: 999px;
+  background-color: var(--color-gray-50);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+header .nav-profile-groups li.empty {
+  color: var(--color-gray-700);
+  font-style: italic;
+}
+
+header .nav-profile-links {
+  margin-top: 14px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-gray-100);
+}
+
+header .nav-tools-list .nav-profile-links a:any-link {
+  display: block;
+  width: auto;
+  height: auto;
+  padding: 8px 4px;
+  color: var(--color-primary-500);
+  font-weight: 700;
+}
+
+header .nav-tools-list .nav-profile-links a:hover {
+  background-color: var(--color-gray-50);
+  text-decoration: underline;
+}
+
+header .nav-tools-list .nav-profile-links a:focus-visible {
+  outline: var(--border-m) solid var(--color-focus-500);
+  outline-offset: -3px;
+}
+
+@media (width >= 900px) {
+  header .nav-tools-list li.nav-auth .nav-profile-trigger .nav-label {
+    position: static;
+    width: auto;
+    height: auto;
+    clip-path: none;
+    max-width: 20ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  header .nav-profile-panel {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    left: auto;
+    width: 360px;
+  }
 }

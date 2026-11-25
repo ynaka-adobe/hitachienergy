@@ -98,10 +98,75 @@ async function fetchSession() {
   }
 }
 
+function el(tag, attrs = {}, ...children) {
+  const node = document.createElement(tag);
+  Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
+  node.append(...children);
+  return node;
+}
+
+function initials(user) {
+  const source = (user.name || user.email || '?').trim();
+  const parts = source.split(/[\s@._-]+/).filter(Boolean);
+  return ((parts[0]?.[0] || '') + (parts[1]?.[0] || '')).toUpperCase() || '?';
+}
+
 /**
- * Okta Sign in / Sign out control backed by the edge function's /auth/* routes.
+ * Profile flyout for a signed-in user: identity, profile fields, groups, Sign out.
+ * Empty profile fields are left out.
+ * @param {object} user /auth/me session
+ * @param {Element} trigger the button that opens the panel
+ * @returns {HTMLDivElement}
+ */
+function buildProfilePanel(user, trigger) {
+  const panel = el(
+    'div',
+    { id: 'nav-profile-panel', class: 'nav-profile-panel', hidden: '' },
+    el(
+      'div',
+      { class: 'nav-profile-identity' },
+      el('span', { class: 'nav-avatar large', 'aria-hidden': 'true' }, initials(user)),
+      el(
+        'div',
+        {},
+        el('p', { class: 'nav-profile-name' }, user.name || 'Signed in'),
+        user.email ? el('p', { class: 'nav-profile-email' }, user.email) : '',
+      ),
+    ),
+  );
+
+  const fields = [['City', user.city], ['State', user.state], ['Country', user.country], ['Company', user.company]]
+    .filter(([, value]) => typeof value === 'string' && value.trim());
+  if (fields.length) {
+    const dl = el('dl', { class: 'nav-profile-fields' });
+    fields.forEach(([term, value]) => dl.append(el('dt', {}, term), el('dd', {}, value.trim())));
+    panel.append(el('p', { class: 'nav-profile-label' }, 'Profile'), dl);
+  }
+
+  const groups = el('ul', { class: 'nav-profile-groups', 'aria-label': 'Groups' });
+  (Array.isArray(user.groups) ? user.groups : [])
+    .filter(Boolean)
+    .forEach((g) => groups.append(el('li', {}, g)));
+  if (!groups.children.length) groups.append(el('li', { class: 'empty' }, 'No groups'));
+  panel.append(el('p', { class: 'nav-profile-label' }, 'Groups'), groups);
+
+  panel.append(el(
+    'div',
+    { class: 'nav-profile-links' },
+    el('a', { href: '/auth/logout', class: 'nav-profile-signout' }, 'Sign out'),
+  ));
+
+  trigger.setAttribute('aria-haspopup', 'true');
+  trigger.setAttribute('aria-expanded', 'false');
+  trigger.setAttribute('aria-controls', panel.id);
+  return panel;
+}
+
+/**
+ * Okta sign-in control backed by the edge function's /auth/* routes.
  * Takes over an authored "Login"/"Sign in" tool link (keeping its icon) or
- * prepends a new item to the tools list. Pages stay public either way.
+ * prepends a new item to the tools list. Signed in, it becomes a profile
+ * flyout. Pages stay public either way.
  * @param {HTMLUListElement} list the tools list
  */
 async function decorateAuth(list) {
@@ -112,29 +177,47 @@ async function decorateAuth(list) {
   li.textContent = '';
   li.classList.add('nav-auth');
 
-  const link = document.createElement('a');
-  link.className = 'nav-auth-button';
-  if (icon) link.append(icon);
-  const label = document.createElement('span');
-  label.className = 'nav-label';
-  link.append(label);
   const returnTo = `${window.location.pathname}${window.location.search}`;
-  const showSignIn = () => {
-    link.href = `/auth/login?returnTo=${encodeURIComponent(returnTo)}`;
-    label.textContent = 'Sign in';
-  };
-  showSignIn();
+  const link = el(
+    'a',
+    { class: 'nav-auth-button', href: `/auth/login?returnTo=${encodeURIComponent(returnTo)}` },
+    ...(icon ? [icon] : []),
+    el('span', { class: 'nav-label' }, 'Sign in'),
+  );
   li.append(link);
   if (!authored) list.prepend(li);
 
-  const session = await fetchSession();
-  if (!session?.authenticated) return;
-  const name = document.createElement('span');
-  name.className = 'nav-user';
-  name.textContent = `Hi, ${session.name || session.email || 'there'}`;
-  li.prepend(name);
-  link.href = '/auth/logout';
-  label.textContent = 'Sign out';
+  const user = await fetchSession();
+  if (!user?.authenticated) return;
+
+  const trigger = el(
+    'button',
+    { type: 'button', class: 'nav-auth-button nav-profile-trigger' },
+    el('span', { class: 'nav-avatar', 'aria-hidden': 'true' }, initials(user)),
+    el('span', { class: 'nav-label' }, user.name || user.email || 'Account'),
+  );
+  trigger.setAttribute('aria-label', `Account: ${user.name || user.email || 'signed in'}`);
+  const panel = buildProfilePanel(user, trigger);
+  link.replaceWith(trigger, panel);
+
+  const setOpen = (open) => {
+    trigger.setAttribute('aria-expanded', String(open));
+    panel.hidden = !open;
+  };
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    setOpen(panel.hidden);
+  });
+  document.addEventListener('click', (e) => {
+    if (!li.contains(e.target)) setOpen(false);
+  });
+  li.addEventListener('keydown', (e) => {
+    if (e.code === 'Escape' && !panel.hidden) {
+      e.stopPropagation();
+      setOpen(false);
+      trigger.focus();
+    }
+  });
 }
 
 function toggleMenu(header, forceOpen) {
@@ -161,7 +244,7 @@ export default async function decorate(block) {
   resolveImages(fragment, nav.base);
   decorateLinks(fragment);
 
-  const sections = [...fragment.children].filter((el) => el.tagName === 'DIV');
+  const sections = [...fragment.children].filter((child) => child.tagName === 'DIV');
   const [brandSection, toolsSection, ...barSections] = sections;
 
   const navEl = document.createElement('nav');
