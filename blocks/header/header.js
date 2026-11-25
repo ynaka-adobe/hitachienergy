@@ -78,6 +78,42 @@ function buildLinkList(section, className) {
   return list;
 }
 
+/**
+ * Okta Sign in / Sign out control. Takes over an authored "Login"/"Sign in"
+ * tool link (keeping its icon) or appends a new item to the tools list.
+ * @param {HTMLUListElement} list the tools list
+ */
+async function decorateAuth(list) {
+  const { getUser, signIn, signOut } = await import('../../scripts/auth.js');
+  const authored = [...list.querySelectorAll('li')]
+    .find((li) => /^(log ?in|sign ?in)$/i.test(li.textContent.trim()));
+  const li = authored || document.createElement('li');
+  const icon = li.querySelector('.nav-icon')?.closest('picture') || li.querySelector('.nav-icon');
+  li.textContent = '';
+  li.classList.add('nav-auth');
+
+  const user = getUser();
+  if (user) {
+    const name = document.createElement('span');
+    name.className = 'nav-user';
+    name.textContent = `Hi, ${user.given_name || user.name || user.preferred_username || user.email}`;
+    li.append(name);
+  }
+
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'nav-auth-button';
+  if (icon) button.append(icon);
+  const label = document.createElement('span');
+  label.className = 'nav-label';
+  label.textContent = user ? 'Sign out' : 'Sign in';
+  button.append(label);
+  button.addEventListener('click', () => (user ? signOut() : signIn()));
+  li.append(button);
+
+  if (!authored) list.prepend(li);
+}
+
 function toggleMenu(header, forceOpen) {
   const open = forceOpen ?? header.getAttribute('aria-expanded') !== 'true';
   header.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -127,12 +163,17 @@ export default async function decorate(block) {
     }
     topInner.append(brand);
   }
-  if (toolsSection) {
-    const tools = document.createElement('div');
-    tools.className = 'nav-tools';
-    tools.append(buildLinkList(toolsSection, 'nav-tools-list'));
-    topInner.append(tools);
-  }
+  const tools = document.createElement('div');
+  tools.className = 'nav-tools';
+  const toolsList = toolsSection
+    ? buildLinkList(toolsSection, 'nav-tools-list')
+    : Object.assign(document.createElement('ul'), { className: 'nav-tools-list' });
+  tools.append(toolsList);
+  topInner.append(tools);
+  decorateAuth(toolsList).catch((e) => {
+    // eslint-disable-next-line no-console
+    console.error('Okta sign-in control failed to load', e);
+  });
   top.append(topInner);
 
   // site bar: site name + any further sections

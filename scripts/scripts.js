@@ -531,7 +531,14 @@ if (isUePreviewHost()) {
   await import(`${window.hlx.codeBasePath}/ue/scripts/ue.js`).then(({ default: ue }) => ue());
 }
 
-loadPage();
+// Okta redirects to /auth/callback?code=…&state=…, which EDS serves via 404.html
+// (it loads this script). Finish sign-in there instead of rendering the page.
+const authCallback = nxParams.has('state') && (nxParams.has('code') || nxParams.has('error'))
+  ? await import('./auth.js').then((auth) => (auth.isCallback() ? auth : null))
+  : null;
+
+if (authCallback) authCallback.handleCallback();
+else loadPage();
 
 (function da() {
   const { searchParams } = new URL(window.location.href);
