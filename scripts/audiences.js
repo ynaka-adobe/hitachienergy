@@ -7,8 +7,11 @@
  * and the plugin swaps the section for the first matching variant.
  *
  * Signals come from the xsc-demo-cug edge function on the custom domain:
- *  - /auth/me: Okta session (authenticated, groups, country) when signed in;
- *  - /auth/geo: CDN country for every visitor.
+ *  - /auth/me: Okta session (authenticated, groups) for the group audiences;
+ *  - /auth/geo: CDN country for the region audiences (the Okta profile
+ *    country is deliberately ignored: region means where the visitor is).
+ * Group variants live under CUG-protected paths; the plugin fetches them
+ * same-origin with the session cookie, and a 401/403 keeps the default.
  * Neither route exists on aem.page/aem.live/localhost, so only the simulation
  * params work there: ?audience=<name> (plugin) and ?country=<code> (this file).
  */
@@ -77,7 +80,7 @@ function session() {
 }
 
 let countryPromise;
-/** ?country= override (remembered), else Okta profile country, else CDN country. */
+/** ?country= override (remembered for the tab), else the CDN country. */
 export function visitorCountry() {
   if (countryPromise) return countryPromise;
   const param = (new URLSearchParams(window.location.search).get('country') || '').toUpperCase();
@@ -89,9 +92,6 @@ export function visitorCountry() {
     return countryPromise;
   }
   countryPromise = (async () => {
-    const me = await session();
-    const fromProfile = me?.authenticated ? toCountryCode(me.country) : null;
-    if (fromProfile) return fromProfile;
     let geo = read(GEO_KEY);
     if (!geo) {
       geo = await withTimeout(getJson('/auth/geo'));
@@ -112,7 +112,8 @@ export const AUDIENCES = {
   na: async () => NA_COUNTRIES.includes(await visitorCountry()),
   jp: async () => (await visitorCountry()) === 'JP',
   partners: () => inGroup('partners'),
-  employee: async () => !!(await session())?.authenticated,
+  // signed-in users who are not partners
+  employee: async () => !!(await session())?.authenticated && !(await inGroup('partners')),
 };
 
 /**
