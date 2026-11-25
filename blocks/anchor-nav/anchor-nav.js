@@ -1,7 +1,8 @@
 /*
  * Anchor nav: in-page links ("on this page").
- * Built automatically from a default-content list whose links all point to
- * anchors on the page (see buildAutoBlocks in scripts.js).
+ * Built automatically from a default-content link list with at least one
+ * anchor on the page (see buildAutoBlocks in scripts.js). Links to other
+ * pages are kept as plain links and ignored by section tracking.
  * - desktop: horizontal bar of links
  * - mobile: a dropdown showing the current section, expanding to all links
  * - both: sticks under the fixed header once scrolled past, and tracks the
