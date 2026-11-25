@@ -345,9 +345,26 @@ function autolinkModals(doc) {
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
  */
+/**
+ * Turns default-content lists whose links all point to anchors on the page
+ * into an anchor-nav block (in-page links).
+ * @param {Element} main The container element
+ */
+function buildAnchorNavBlocks(main) {
+  main.querySelectorAll(':scope > div > ul').forEach((ul) => {
+    const links = [...ul.querySelectorAll('a')];
+    if (links.length < 2 || ul.querySelector('ul')) return;
+    if (!links.every((a) => (a.getAttribute('href') || '').startsWith('#'))) return;
+    const slot = document.createElement('div');
+    ul.before(slot);
+    slot.replaceWith(buildBlock('anchor-nav', [[ul]]));
+  });
+}
+
 function buildAutoBlocks(main) {
   try {
     buildDynamicMediaImages(main);
+    buildAnchorNavBlocks(main);
     if (!main.querySelector('.hero')) buildHeroBlock(main);
   } catch (error) {
     // eslint-disable-next-line no-console

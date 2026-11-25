@@ -401,41 +401,6 @@ main .section.dark a:any-link {
   color: var(--color-white);
 }
 
-/* in-page anchor bar under the hero (source: centred, ruled, bold red links) */
-main > .section.hero-banner-container:first-of-type:has(> .default-content-wrapper > ul) {
-  margin-bottom: calc(var(--section-spacing) + 38px);
-}
-
-main > .section.hero-banner-container:first-of-type > .default-content-wrapper > ul {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin: 48px 0 0;
-  padding: 0;
-  border-top: 1px solid var(--color-gray-900);
-  border-bottom: 1px solid var(--color-gray-900);
-  list-style: none;
-}
-
-main > .section.hero-banner-container:first-of-type > .default-content-wrapper > ul > li {
-  margin: 0;
-  padding: 0;
-}
-
-main > .section.hero-banner-container:first-of-type > .default-content-wrapper > ul a:any-link {
-  display: block;
-  padding: 12px 24px;
-  border-bottom: 4px solid transparent;
-  color: var(--color-primary-500);
-  font-weight: 700;
-  line-height: 24px;
-  text-decoration: none;
-}
-
-main > .section.hero-banner-container:first-of-type > .default-content-wrapper > ul a:hover {
-  border-bottom-color: var(--color-primary-500);
-}
-
 /* about section: space between the image tiles and the follow-up text */
 main .section.cards-peekaboo-container > .cards-peekaboo-wrapper + .default-content-wrapper:last-child {
   margin-top: 64px;

@@ -1,0 +1,194 @@
+/* Anchor nav (in-page links). Mobile first.
+ * Values measured on https://powerportal.hitachienergy.com/ (375x812, 1440x900). */
+
+main > .section > .anchor-nav-wrapper {
+  margin-top: 48px;
+}
+
+.anchor-nav .anchor-nav-bar {
+  background-color: var(--color-white);
+}
+
+/* stuck under the fixed header while scrolling */
+.anchor-nav .anchor-nav-bar.is-stuck {
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  right: 0;
+  z-index: 9;
+  padding: 0 24px;
+}
+
+.anchor-nav nav {
+  position: relative;
+  padding: 8px 0;
+  border-top: 1px solid var(--color-gray-100);
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+.anchor-nav .anchor-nav-bar.is-stuck nav {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+}
+
+/* mobile toggle: current section + chevron */
+.anchor-nav .anchor-nav-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--color-gray-900);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  text-align: left;
+  white-space: normal;
+  cursor: pointer;
+}
+
+.anchor-nav .anchor-nav-toggle:hover {
+  border: 0;
+  background: none;
+  color: var(--color-gray-900);
+}
+
+.anchor-nav .anchor-nav-toggle:focus-visible {
+  outline: var(--border-m) solid var(--color-focus-500);
+  outline-offset: 2px;
+}
+
+.anchor-nav .anchor-nav-icon {
+  position: relative;
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+}
+
+/* chevron down */
+.anchor-nav .anchor-nav-icon::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentcolor;
+  border-bottom: 2px solid currentcolor;
+  transform: rotate(45deg);
+}
+
+.anchor-nav .anchor-nav-list {
+  display: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.anchor-nav .anchor-nav-list li {
+  margin: 0;
+  padding: 0;
+}
+
+.anchor-nav .anchor-nav-list a:any-link {
+  display: block;
+  color: var(--color-gray-900);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .anchor-nav .anchor-nav-list a:hover {
+    color: var(--color-primary-500);
+  }
+}
+
+/* mobile open: the list replaces the label, the chevron becomes a cross */
+.anchor-nav.is-open .anchor-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.anchor-nav.is-open .anchor-nav-toggle {
+  position: absolute;
+  top: 8px;
+  right: 0;
+  width: auto;
+}
+
+.anchor-nav.is-open .anchor-nav-current {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.anchor-nav.is-open .anchor-nav-icon::before,
+.anchor-nav.is-open .anchor-nav-icon::after {
+  content: '';
+  position: absolute;
+  top: 11px;
+  left: 4px;
+  width: 16px;
+  height: 2px;
+  border: 0;
+  background-color: currentcolor;
+  transform: rotate(45deg);
+}
+
+.anchor-nav.is-open .anchor-nav-icon::after {
+  transform: rotate(-45deg);
+}
+
+/* desktop: centred, ruled bar of bold red links */
+@media (width >= 900px) {
+  main .section:has(.anchor-nav-wrapper) {
+    margin-bottom: calc(var(--section-spacing) + 38px);
+  }
+
+  .anchor-nav .anchor-nav-bar.is-stuck {
+    padding: 0 32px;
+  }
+
+  .anchor-nav nav,
+  .anchor-nav.is-open nav {
+    padding: 0;
+    border-top-color: var(--color-gray-900);
+    border-bottom-color: var(--color-gray-900);
+  }
+
+  .anchor-nav .anchor-nav-toggle,
+  .anchor-nav.is-open .anchor-nav-toggle {
+    display: none;
+  }
+
+  .anchor-nav .anchor-nav-list,
+  .anchor-nav.is-open .anchor-nav-list {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .anchor-nav .anchor-nav-list a:any-link {
+    padding: 12px 24px;
+    border-bottom: 4px solid transparent;
+    color: var(--color-primary-500);
+  }
+
+  .anchor-nav .anchor-nav-list a:hover,
+  .anchor-nav .anchor-nav-list a[aria-current] {
+    border-bottom-color: var(--color-primary-500);
+  }
+}
