@@ -1,0 +1,45 @@
+{
+  "variantName": "columns-media",
+  "baseBlock": "columns",
+  "version": "1.0.0",
+  "created": "2026-11-24T00:00:00.000Z",
+  "canonicalModel": "standalone",
+  "sourceContext": {
+    "originUrl": "https://powerportal.hitachienergy.com/",
+    "originPage": "Hitachi Energy Power Portal homepage",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "spacious",
+    "purpose": "media and text split with eyebrow and CTA",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "one row: image cell | eyebrow paragraph, heading, paragraphs, CTA link",
+    "columns": 2,
+    "imageCount": 1,
+    "buttonCount": 1,
+    "hasDescription": true,
+    "hasCTA": true
+  },
+  "options": [],
+  "memberVariantIds": [],
+  "reuseGuidance": {
+    "suitableFor": [
+      "program or partnership promos with a photo beside text",
+      "image + eyebrow + heading + body + single CTA"
+    ],
+    "notSuitableFor": [
+      "more than two columns of equal text",
+      "repeating card grids"
+    ]
+  },
+  "usage": {
+    "pagesUsing": [
+      "/index"
+    ],
+    "reuseCount": 1,
+    "lastUsed": "2026-11-24T00:00:00.000Z"
+  }
+}

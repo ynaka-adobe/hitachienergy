@@ -1,0 +1,155 @@
+{
+  "metadata": {
+    "projectType": "da"
+  },
+  "templates": [
+    {
+      "name": "home",
+      "urls": [
+        "https://powerportal.hitachienergy.com/"
+      ],
+      "representativeUrl": "https://powerportal.hitachienergy.com/",
+      "description": "Power Portal homepage: hero stage, about teasers, partner program, news list, events carousel, webinars, feedback banner",
+      "urlPattern": "/",
+      "blocks": [
+        {
+          "name": "hero-banner",
+          "instances": [
+            ".page-stagev2",
+            ".cmp-marketing-banner"
+          ]
+        },
+        {
+          "name": "cards-peekaboo",
+          "instances": [
+            ".cmp-peekaboo-video-teasers"
+          ]
+        },
+        {
+          "name": "columns-media",
+          "instances": [
+            ".cmp-mediatext-large"
+          ]
+        },
+        {
+          "name": "cards-news-list",
+          "instances": [
+            ".newslist"
+          ]
+        },
+        {
+          "name": "cards-event-carousel",
+          "instances": [
+            ".carousel.eventList"
+          ]
+        },
+        {
+          "name": "cards-promo",
+          "instances": [
+            ".filterablelist.eventlist"
+          ]
+        }
+      ],
+      "sections": [
+        {
+          "id": "s1",
+          "name": "Hero stage",
+          "selector": [
+            ".page-stage"
+          ],
+          "style": null,
+          "blocks": [
+            "hero-banner"
+          ],
+          "defaultContent": [
+            ".anchornavigation"
+          ]
+        },
+        {
+          "id": "s2",
+          "name": "About the Power Portal",
+          "selector": [
+            ".page-stage + .container.responsivegrid"
+          ],
+          "style": null,
+          "blocks": [
+            "cards-peekaboo"
+          ],
+          "defaultContent": [
+            ".title-v2",
+            ".text"
+          ]
+        },
+        {
+          "id": "s3",
+          "name": "Channel Partner Program",
+          "selector": [
+            ".mediatextlarge"
+          ],
+          "style": "pink-gradient",
+          "blocks": [
+            "columns-media"
+          ],
+          "defaultContent": []
+        },
+        {
+          "id": "s4",
+          "name": "News",
+          "selector": [
+            ".mediatextlarge + .title-v2",
+            ".newslist"
+          ],
+          "style": null,
+          "blocks": [
+            "cards-news-list"
+          ],
+          "defaultContent": [
+            ".mediatextlarge + .title-v2"
+          ]
+        },
+        {
+          "id": "s5",
+          "name": "Events",
+          "selector": [
+            ".newslist + .title-v2",
+            ".carousel.eventList"
+          ],
+          "style": "light-grey",
+          "blocks": [
+            "cards-event-carousel"
+          ],
+          "defaultContent": [
+            ".newslist + .title-v2"
+          ]
+        },
+        {
+          "id": "s6",
+          "name": "Webinars",
+          "selector": [
+            ".termsandconditions + .title-v2",
+            ".filterablelist.eventlist"
+          ],
+          "style": null,
+          "blocks": [
+            "cards-promo"
+          ],
+          "defaultContent": [
+            ".termsandconditions + .title-v2"
+          ]
+        },
+        {
+          "id": "s7",
+          "name": "Your voice matters",
+          "selector": [
+            ".cmp-layoutcontainer"
+          ],
+          "style": null,
+          "blocks": [
+            "hero-banner"
+          ],
+          "defaultContent": []
+        }
+      ]
+    }
+  ]
+}

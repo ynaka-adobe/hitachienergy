@@ -1,0 +1,152 @@
+/* Block: cards-news-list -- values from source .newslist computed styles */
+
+.cards-news-list > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* row: title spans the full width, meta line and arrow share the bottom row */
+.cards-news-list .cards-news-list-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 16px;
+  align-items: end;
+  padding: 16px;
+  border-radius: 8px;
+  color: var(--text-color);
+}
+
+/* source: the first row has no top padding */
+.cards-news-list .cards-news-list-item:first-child {
+  padding-top: 0;
+}
+
+.cards-news-list .cards-news-list-item-body {
+  display: contents;
+}
+
+.cards-news-list .cards-news-list-title {
+  grid-column: 1 / -1;
+  margin: 0 0 8px;
+  font-family: var(--heading-font-family);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 27px;
+  color: var(--text-color);
+}
+
+.cards-news-list .cards-news-list-title a:any-link {
+  color: inherit;
+  text-decoration: none;
+  transition: none;
+}
+
+/* stretch the title link over the whole row */
+.cards-news-list .cards-news-list-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+}
+
+.cards-news-list .cards-news-list-link:focus-visible {
+  outline: none;
+}
+
+.cards-news-list .cards-news-list-link:focus-visible::after {
+  outline: var(--border-m) solid var(--color-focus-500);
+}
+
+/* meta line: tag chip, then date | read time */
+.cards-news-list .cards-news-list-meta {
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--text-color);
+}
+
+.cards-news-list .cards-news-list-tag {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: rgb(12 12 12 / 60%);
+  color: var(--color-white);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.cards-news-list .cards-news-list-info > span + span::before {
+  content: '|';
+  display: inline-block;
+  padding: 0 8px;
+}
+
+.cards-news-list .cards-news-list-arrow {
+  grid-column: 2;
+  display: flex;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background-color: var(--color-gray-900);
+  color: var(--color-white);
+}
+
+/* material "keyboard_arrow_right" glyph */
+.cards-news-list .cards-news-list-arrow::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 24px;
+  background-color: currentcolor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z'/%3E%3C/svg%3E") center / 24px 24px no-repeat;
+}
+
+/* hover: title and arrow turn brand red */
+.cards-news-list .cards-news-list-item:hover .cards-news-list-title {
+  color: var(--color-primary-500);
+}
+
+.cards-news-list .cards-news-list-item:hover .cards-news-list-arrow {
+  background-color: var(--color-primary-500);
+}
+
+/* "See all" under the list fills the column on mobile */
+main .section.cards-news-list-container > .default-content-wrapper:last-child a.button:any-link {
+  display: flex;
+  width: 100%;
+}
+
+@media (width >= 900px) {
+  /* source list sits in 10 of 12 grid columns (offset 1) */
+  .cards-news-list,
+  main .section.cards-news-list-container > .default-content-wrapper:last-child > * {
+    max-width: calc((100% + 24px) * 5 / 6 - 24px);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cards-news-list .cards-news-list-meta {
+    display: block;
+  }
+
+  .cards-news-list .cards-news-list-info::before {
+    content: '|';
+    display: inline-block;
+    padding: 0 8px;
+  }
+
+  main .section.cards-news-list-container > .default-content-wrapper:last-child a.button:any-link {
+    display: inline-flex;
+    width: auto;
+  }
+}

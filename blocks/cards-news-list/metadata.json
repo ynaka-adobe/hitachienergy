@@ -1,0 +1,45 @@
+{
+  "variantName": "cards-news-list",
+  "baseBlock": "cards",
+  "version": "1.0.0",
+  "created": "2026-11-24T00:00:00.000Z",
+  "canonicalModel": "collection",
+  "sourceContext": {
+    "originUrl": "https://powerportal.hitachienergy.com/",
+    "originPage": "Hitachi Energy Power Portal homepage",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light",
+    "density": "compact",
+    "purpose": "text-only news/press list",
+    "imagePattern": "none"
+  },
+  "contentPattern": {
+    "structure": "per item: title (linked to detail page) | meta line: *tag* | date | read time",
+    "columns": 1,
+    "imageCount": 0,
+    "buttonCount": 0,
+    "hasDescription": false,
+    "hasCTA": true
+  },
+  "options": [],
+  "memberVariantIds": [],
+  "reuseGuidance": {
+    "suitableFor": [
+      "press release / news lists",
+      "stacked linked rows with tag, date and read time"
+    ],
+    "notSuitableFor": [
+      "image-led cards",
+      "event listings with dates badges"
+    ]
+  },
+  "usage": {
+    "pagesUsing": [
+      "/index"
+    ],
+    "reuseCount": 1,
+    "lastUsed": "2026-11-24T00:00:00.000Z"
+  }
+}

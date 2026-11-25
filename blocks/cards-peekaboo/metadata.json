@@ -1,0 +1,45 @@
+{
+  "variantName": "cards-peekaboo",
+  "baseBlock": "cards",
+  "version": "1.0.0",
+  "created": "2026-11-24T00:00:00.000Z",
+  "canonicalModel": "collection",
+  "sourceContext": {
+    "originUrl": "https://powerportal.hitachienergy.com/",
+    "originPage": "Hitachi Energy Power Portal homepage",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "dark-overlay",
+    "density": "compact",
+    "purpose": "teaser tiles with hover-revealed text",
+    "imagePattern": "full-bleed"
+  },
+  "contentPattern": {
+    "structure": "per tile: image cell | title (heading) + short text",
+    "columns": 2,
+    "imageCount": 1,
+    "buttonCount": 0,
+    "hasDescription": true
+  },
+  "options": [],
+  "memberVariantIds": [],
+  "reuseGuidance": {
+    "suitableFor": [
+      "edge-to-edge image tiles with an overlaid title",
+      "teasers whose description is revealed on hover/focus"
+    ],
+    "notSuitableFor": [
+      "cards with CTA buttons below the image",
+      "text-only lists",
+      "icon feature rows"
+    ]
+  },
+  "usage": {
+    "pagesUsing": [
+      "/index"
+    ],
+    "reuseCount": 1,
+    "lastUsed": "2026-11-24T00:00:00.000Z"
+  }
+}

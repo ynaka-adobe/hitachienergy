@@ -1,113 +1,172 @@
-/* cards-promo — promotional feature cards: 1 yellow (tall) + 2 navy (split) */
+/* cards-promo: event / webinar teaser cards (source: .filterablelist.eventlist) */
 .cards-promo > ul {
   list-style: none;
-  margin: 0;
+  margin: 24px 0 0;
   padding: 0;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: 16px 8px;
 }
 
 .cards-promo > ul > li {
+  position: relative;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  border: none;
-  border-radius: var(--border-radius);
-  background-color: var(--cat-neutral-10);
+  border-radius: 8px;
+  background-color: var(--color-gray-50);
+  box-shadow: rgb(0 0 0 / 40%) 0 1px 3px 0;
+  color: var(--text-color);
 }
 
 .cards-promo .cards-promo-card-image {
+  position: relative;
+  aspect-ratio: 16 / 9;
   line-height: 0;
 }
 
-.cards-promo .cards-promo-card-image img {
+.cards-promo .cards-promo-card-image picture {
+  display: block;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: 100%;
+}
+
+.cards-promo .cards-promo-card-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  border-radius: 8px 8px 0 0;
 }
 
 .cards-promo .cards-promo-card-body {
-  margin: 0;
-  padding: 24px;
   display: flex;
   flex-direction: column;
-  flex: 1;
+  flex: 0 1 100%;
+  padding: 16px;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* tag chips (authored as "Tag | Tag | Tag") */
+.cards-promo .cards-promo-card-tags {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
+  max-height: 64px;
+  overflow: hidden;
+  margin: 0 0 12px;
+  padding: 0;
+}
+
+.cards-promo .cards-promo-card-tags li {
+  display: block;
+  padding: 4px 12px;
+  border: 1px solid var(--color-gray-300);
+  border-radius: 6px;
+  background-color: var(--color-gray-50);
+  color: var(--color-gray-700);
+  font-size: 12px;
+  line-height: 18px;
 }
 
 .cards-promo .cards-promo-card-body h2,
 .cards-promo .cards-promo-card-body h3,
 .cards-promo .cards-promo-card-body h4 {
-  margin: 0;
+  margin: 0 0 24px;
+  color: var(--text-color);
   font-family: var(--heading-font-family);
-  font-weight: var(--font-weight-bold);
-  font-size: var(--heading-font-size-l);
-  line-height: 1.2;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 27px;
+}
+
+.cards-promo .cards-promo-card-body h2 a:any-link,
+.cards-promo .cards-promo-card-body h3 a:any-link,
+.cards-promo .cards-promo-card-body h4 a:any-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* the title link covers the whole card, like the source card link */
+.cards-promo .cards-promo-card-body h2 a:any-link::after,
+.cards-promo .cards-promo-card-body h3 a:any-link::after,
+.cards-promo .cards-promo-card-body h4 a:any-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 8px;
 }
 
 .cards-promo .cards-promo-card-body p {
-  margin: 0;
-  font-size: var(--body-font-size-m);
-  line-height: 1.5;
+  display: -webkit-box;
+  margin: 0 0 4px;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 21px;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
 }
 
-.cards-promo .cards-promo-card-body a:any-link {
-  align-self: flex-start;
-  margin-top: auto;
+/* arrow CTA: dark square with chevron, bottom right */
+.cards-promo .cards-promo-card-body p.cards-promo-card-cta {
+  display: flex;
+  justify-content: flex-end;
+  margin: auto 0 0;
+  overflow: visible;
+  line-height: 24px;
 }
 
-/* first card = Cat Yellow (black text) */
-.cards-promo > ul > li:first-child {
-  background-color: var(--brand-yellow);
-  color: var(--text-strong-color);
+main .cards-promo .cards-promo-card-cta a:any-link {
+  position: relative;
+  display: flex;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background-color: var(--color-gray-900);
+  color: var(--color-white);
+  text-decoration: none;
 }
 
-/* remaining cards = navy (knockout text) */
-.cards-promo > ul > li:not(:first-child) {
-  background-color: var(--brand-navy);
-  color: var(--background-color);
+main .cards-promo .cards-promo-card-cta a:any-link::before {
+  content: '';
+  width: 24px;
+  height: 24px;
+  background-color: currentcolor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z'/%3E%3C/svg%3E") center / 24px 24px no-repeat;
 }
 
-.cards-promo > ul > li:not(:first-child) h2,
-.cards-promo > ul > li:not(:first-child) h3,
-.cards-promo > ul > li:not(:first-child) h4 {
-  color: var(--background-color);
+.cards-promo .cards-promo-card-cta-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-/* CTA inside navy cards uses yellow button */
-.cards-promo > ul > li a.button:any-link {
-  background-color: var(--brand-yellow);
-  border-color: var(--brand-yellow);
-  color: var(--text-strong-color);
+/* card hover: red title and arrow */
+.cards-promo > ul > li:hover h2,
+.cards-promo > ul > li:hover h3,
+.cards-promo > ul > li:hover h4 {
+  color: var(--color-primary-500);
 }
 
-@media (width >= 900px) {
+main .cards-promo > ul > li:hover .cards-promo-card-cta a:any-link {
+  background-color: var(--color-primary-500);
+}
+
+@media (width >= 600px) {
   .cards-promo > ul {
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
   }
+}
 
-  /* left yellow card spans both rows */
-  .cards-promo > ul > li:first-child {
-    grid-row: span 2;
-  }
-
-  /* navy cards: image left, text right */
-  .cards-promo > ul > li:not(:first-child) {
-    flex-direction: row;
-  }
-
-  .cards-promo > ul > li:not(:first-child) .cards-promo-card-image {
-    flex: 0 0 45%;
-  }
-
-  .cards-promo > ul > li:not(:first-child) .cards-promo-card-image img {
-    height: 100%;
-    aspect-ratio: auto;
-  }
-
-  .cards-promo > ul > li:not(:first-child) .cards-promo-card-body {
-    flex: 1;
+@media (width >= 960px) {
+  .cards-promo > ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }

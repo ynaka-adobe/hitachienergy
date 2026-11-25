@@ -1,20 +1,284 @@
-footer {
-  background-color: var(--light-color);
-  font-size: var(--body-font-size-xs);
+/* Footer: full-width bands with a centred 1200px column.
+ * Mobile first. Values measured on https://powerportal.hitachienergy.com/
+ * (375x812 and 1440x900). */
+
+footer .footer-wrapper {
+  font-family: var(--body-font-family);
+  color: var(--color-gray-900);
 }
 
-footer .footer > div {
-  margin: auto;
-  max-width: 1200px;
-  padding: 40px 24px 24px;
+footer .footer-band-inner {
+  box-sizing: border-box;
+  max-width: calc(var(--content-max-width) + 64px);
+  margin: 0 auto;
+  padding: 0 16px;
 }
 
-footer .footer p {
+footer .footer-band p {
   margin: 0;
 }
 
+footer .footer-band ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+footer .footer-band a:any-link {
+  color: var(--color-gray-900);
+  text-decoration: none;
+}
+
+footer .footer-band a:hover {
+  color: var(--color-primary-700);
+}
+
+footer .footer-band a:hover .footer-link-label {
+  text-decoration: underline;
+}
+
+footer .footer-band a:focus-visible {
+  outline: var(--border-m) solid var(--color-focus-500);
+  outline-offset: 2px;
+}
+
+/* band 1: back-to-top strip */
+footer .footer-band-top .footer-band-inner {
+  display: flex;
+  justify-content: flex-end;
+  max-width: calc(var(--content-max-width) + 112px);
+  height: 48px;
+  padding: 0 32px;
+}
+
+footer .footer-back-to-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background-color: var(--color-primary-500);
+}
+
+footer .footer-band .footer-back-to-top:hover {
+  background-color: var(--color-black);
+}
+
+footer .footer-back-to-top img {
+  display: block;
+  width: 40px;
+  height: 24px;
+}
+
+/* band 2: primary link columns */
+footer .footer-band-2 {
+  background-color: var(--color-gray-50);
+}
+
+footer .footer-band-2 .footer-band-inner {
+  padding-top: 24px;
+  padding-bottom: 30px;
+}
+
+footer .footer-band-2 .footer-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px 32px;
+}
+
+footer .footer-band-2 .footer-list a:any-link {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+/* chevron after each primary link (stays with the last word when wrapping) */
+footer .footer-link-tail {
+  white-space: nowrap;
+}
+
+footer .footer-band-2 .footer-list .footer-link-tail::after {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-left: 4px;
+  vertical-align: middle;
+  background-color: currentcolor;
+  mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>') center / 20px no-repeat;
+}
+
+/* band 3: follow us + secondary links, band 4: global link + copyright + legal */
+footer .footer-band-3,
+footer .footer-band-4 {
+  background-color: var(--color-gray-100);
+}
+
+footer .footer-band-3 .footer-band-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-top: 24px;
+  padding-bottom: 0;
+}
+
+footer .footer-band-3 .footer-start > p {
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+footer .footer-icons {
+  display: flex;
+  gap: 14.75px;
+}
+
+footer .footer-band .footer-icons a:any-link {
+  display: block;
+  width: 24px;
+  height: 26px;
+}
+
+footer .footer-icons img {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+footer .footer-band-3 .footer-end {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-size: 14px;
+  line-height: 21px;
+}
+
+/* bottom band: centred column on mobile; copyright moves below the legal links */
+footer .footer-band-4 .footer-band-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  text-align: center;
+}
+
+footer .footer-band-4 .footer-start {
+  display: contents;
+}
+
+footer .footer-band-4 .footer-link-para {
+  order: 0;
+  box-sizing: border-box;
+  width: 250px;
+  margin-bottom: 16px;
+  padding: 10px 0;
+  border: 1px solid #2d2d2d;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+footer .footer-band-4 .footer-end {
+  order: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 12px 0;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+footer .footer-band-4 .footer-end a:any-link {
+  display: block;
+
+  /* 24px minimum touch target (WCAG 2.5.8) */
+  padding: 3px 5px;
+}
+
+footer .footer-band-4 .footer-end li:not(:last-child) a:any-link {
+  border-right: 1px solid var(--color-gray-300);
+}
+
+footer .footer-band-4 .footer-text {
+  order: 2;
+  margin-top: 24px;
+  font-size: 12px;
+  line-height: 18px;
+}
+
 @media (width >= 900px) {
-  footer .footer > div {
-    padding: 40px 32px 24px;
+  footer .footer-band-inner {
+    padding: 0 32px;
+  }
+
+  footer .footer-band-top .footer-band-inner {
+    padding: 0;
+  }
+
+  footer .footer-band-2 .footer-band-inner {
+    padding-top: 24px;
+    padding-bottom: 48px;
+  }
+
+  footer .footer-band-2 .footer-list {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px 32px;
+  }
+
+  footer .footer-band-3 .footer-band-inner {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding-top: 8px;
+    padding-bottom: 40px;
+  }
+
+  footer .footer-band-3 .footer-end {
+    flex-flow: row wrap;
+    gap: 8px 23px;
+    padding-top: 1px;
+  }
+
+  footer .footer-band-4 .footer-band-inner {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    text-align: left;
+  }
+
+  footer .footer-band-4 .footer-start {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  footer .footer-band-4 .footer-link-para {
+    width: auto;
+    margin-bottom: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  footer .footer-band-4 .footer-end {
+    gap: 8px 16px;
+    margin: 0;
+    font-size: 14px;
+    line-height: 21px;
+  }
+
+  footer .footer-band-4 .footer-end a:any-link,
+  footer .footer-band-4 .footer-end li:not(:last-child) a:any-link {
+    padding: 0;
+    border-right: 0;
+  }
+
+  footer .footer-band-4 .footer-text {
+    margin-top: 0;
+    font-size: 16px;
+    line-height: 24px;
   }
 }
