@@ -5,7 +5,7 @@
  *
  * The rule syntax must match the edge function's parser
  * (AEM-p154856 edge-functions-xsc-demo/src/abac.js):
- *   comma = AND, `|` = OR, `country:XX`, `company:name`, `group:name`.
+ *   comma = AND, `|` = OR, `country:XX`, `group:name`.
  */
 
 // ─── ABAC vocabulary offered in the UI ──────────────────────────────────────
@@ -16,10 +16,12 @@ export const COUNTRIES = [
   { value: 'DE', label: 'Germany (DE)' },
 ];
 
-export const COMPANIES = [
-  { value: 'adobe', label: 'Adobe' },
-  { value: 'caterpillar', label: 'Caterpillar' },
-  { value: 'perficient', label: 'Perficient' },
+// Okta groups; the edge function compares groups case-insensitively.
+export const GROUPS = [
+  { value: 'na', label: 'na' },
+  { value: 'partners', label: 'partners' },
+  { value: 'xsc', label: 'XSC' },
+  { value: 'auth-group', label: 'auth-group' },
 ];
 
 export const ATTR_LOGGED_IN = 'logged-in';
@@ -32,29 +34,33 @@ export const ATTR_LOGGED_IN = 'logged-in';
  * requires a session regardless. Returns '' when nothing was selected, because
  * an attribute rule with no attributes would silently mean "any user".
  */
-export function buildAbacRule({ country, company } = {}) {
+export function buildAbacRule({ country, group } = {}) {
   const parts = [];
   if (country) parts.push(`country:${String(country).trim().toUpperCase()}`);
-  if (company) parts.push(`company:${String(company).trim().toLowerCase()}`);
+  if (group) parts.push(`group:${String(group).trim().toLowerCase()}`);
   return parts.length ? [ATTR_LOGGED_IN, ...parts].join(', ') : '';
 }
 
 /**
  * Reads an existing Groups cell back into the ABAC selection, so editing a
  * saved row pre-fills the dropdowns. Returns null when the cell is not a
- * simple ABAC rule this UI can represent (e.g. groups or OR rules).
+ * simple ABAC rule this UI can represent (e.g. OR rules, company rules or
+ * unknown groups); those rows are edited as raw text instead.
  */
 export function parseAbacRule(cell) {
   const text = String(cell || '').trim();
   if (!text || text.includes('|')) return null;
-  const selection = { country: '', company: '' };
+  const selection = { country: '', group: '' };
   const ok = text.split(',').map((t) => t.trim().toLowerCase()).filter(Boolean).every((t) => {
     if (t === ATTR_LOGGED_IN) return true;
     if (t.startsWith('country:')) { selection.country = t.slice(8).toUpperCase(); return true; }
-    if (t.startsWith('company:')) { selection.company = t.slice(8); return true; }
+    if (t.startsWith('group:') && !selection.group && GROUPS.some((g) => g.value === t.slice(6).trim())) {
+      selection.group = t.slice(6).trim();
+      return true;
+    }
     return false;
   });
-  return ok && (selection.country || selection.company) ? selection : null;
+  return ok && (selection.country || selection.group) ? selection : null;
 }
 
 // ─── Path handling ──────────────────────────────────────────────────────────

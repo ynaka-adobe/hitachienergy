@@ -4,7 +4,7 @@
  * Same Apply / Remove behaviour as the shared aem-apps CUG plugin
  * (tools/plugins/cug), plus a rule builder that writes rows into the
  * `closed-user-groups` sheet, including attribute-based (ABAC) rules for
- * region (country) and company that the shared xsc-demo-cug edge function enforces.
+ * region (country) and Okta group that the shared xsc-demo-cug edge function enforces.
  *
  * Saving only edits the DA sheet. Apply pushes the sheet to the site's
  * headers.json (Config Service), which is what the CDN/edge function reads.
@@ -12,7 +12,7 @@
 // eslint-disable-next-line import/no-unresolved
 import DA_SDK from 'https://da.live/nx/utils/sdk.js';
 import {
-  COMPANIES, COUNTRIES, buildAbacRule, normalisePath, parseAbacRule,
+  COUNTRIES, GROUPS, buildAbacRule, normalisePath, parseAbacRule,
   removeRow, suggestPath, upsertRow,
 } from './rules.js';
 
@@ -182,7 +182,7 @@ function renderApp(container, {
   });
   const abacToggle = el('input', { type: 'checkbox', name: 'abac', checked: true });
   const countrySelect = select('country', COUNTRIES);
-  const companySelect = select('company', COMPANIES);
+  const groupSelect = select('group', GROUPS);
   const groupsInput = el('input', { name: 'groups', type: 'text', placeholder: 'partners (empty = any signed-in user)' });
   const loginInput = el('input', { name: 'login', type: 'text', placeholder: 'optional, e.g. /partner-login' });
   const preview = el('code', { class: 'rule-preview' });
@@ -190,13 +190,13 @@ function renderApp(container, {
     'div',
     { class: 'abac-fields' },
     el('label', {}, 'Region (country)', countrySelect),
-    el('label', {}, 'Company', companySelect),
+    el('label', {}, 'Group', groupSelect),
   );
   const groupsField = el('label', { class: 'groups-field' }, 'Groups', groupsInput);
   const saveBtn = el('button', { class: 'action-btn', type: 'submit' }, 'Save ABAC rule');
 
   const currentRule = () => (abacToggle.checked
-    ? buildAbacRule({ country: countrySelect.value, company: companySelect.value })
+    ? buildAbacRule({ country: countrySelect.value, group: groupSelect.value })
     : groupsInput.value.trim());
 
   const refreshForm = () => {
@@ -204,9 +204,9 @@ function renderApp(container, {
     groupsField.hidden = abacToggle.checked;
     saveBtn.textContent = abacToggle.checked ? 'Save ABAC rule' : 'Save rule';
     const rule = currentRule();
-    preview.textContent = rule || (abacToggle.checked ? 'select a region and/or company' : '(any signed-in user)');
+    preview.textContent = rule || (abacToggle.checked ? 'select a region and/or group' : '(any signed-in user)');
   };
-  [abacToggle, countrySelect, companySelect].forEach((n) => n.addEventListener('change', refreshForm));
+  [abacToggle, countrySelect, groupSelect].forEach((n) => n.addEventListener('change', refreshForm));
   groupsInput.addEventListener('input', refreshForm);
 
   // Rules table
@@ -221,7 +221,7 @@ function renderApp(container, {
     const abac = parseAbacRule(row['cug-groups']);
     abacToggle.checked = !!abac;
     countrySelect.value = abac ? abac.country : '';
-    companySelect.value = abac ? abac.company : '';
+    groupSelect.value = abac ? abac.group : '';
     groupsInput.value = abac ? '' : row['cug-groups'] || '';
     refreshForm();
     pathInput.focus();
@@ -282,7 +282,7 @@ function renderApp(container, {
         const url = normalisePath(pathInput.value);
         if (!url) { setStatus('error', 'Enter a site path such as /regions/usa/**.'); return; }
         const rule = currentRule();
-        if (abacToggle.checked && !rule) { setStatus('error', 'Select a region, a company, or both.'); return; }
+        if (abacToggle.checked && !rule) { setStatus('error', 'Select a region, a group, or both.'); return; }
         const row = {
           url, 'cug-required': 'true', 'cug-groups': rule, 'cug-login-path': loginInput.value.trim(),
         };
