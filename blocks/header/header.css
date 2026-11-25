@@ -69,7 +69,8 @@ header .nav-tools-list {
   gap: 22px;
 }
 
-header .nav-tools-list a:any-link {
+header .nav-tools-list a:any-link,
+header .nav-tools-list .nav-auth-button {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -78,7 +79,34 @@ header .nav-tools-list a:any-link {
   height: 48px;
 }
 
-header .nav-tools-list a:focus-visible {
+header .nav-tools-list .nav-auth-button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+header .nav-auth {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* greeting fits the top bar on desktop only */
+header .nav-user {
+  display: none;
+  max-width: 20ch;
+  overflow: hidden;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+header .nav-tools-list a:focus-visible,
+header .nav-tools-list .nav-auth-button:focus-visible {
   outline: var(--border-m) solid var(--color-focus-500);
   outline-offset: -3px;
 }
@@ -253,7 +281,8 @@ header[aria-expanded='true'] .nav-site {
     gap: 32px;
   }
 
-  header .nav-tools-list a:any-link {
+  header .nav-tools-list a:any-link,
+  header .nav-tools-list .nav-auth-button {
     flex-direction: row;
     justify-content: flex-start;
     gap: 8px;
@@ -282,7 +311,12 @@ header[aria-expanded='true'] .nav-site {
     text-transform: none;
   }
 
-  header .nav-tools-list a:hover .nav-label {
+  header .nav-user {
+    display: block;
+  }
+
+  header .nav-tools-list a:hover .nav-label,
+  header .nav-tools-list .nav-auth-button:hover .nav-label {
     text-decoration: underline;
   }
 
