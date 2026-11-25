@@ -1,0 +1,11 @@
+{
+  "type": "da",
+  "sites": {
+    "hitachienergy": {
+      "previewOrg": "ynaka-adobe",
+      "previewSite": "hitachienergy",
+      "contentHostUrl": "https://content.da.live/ynaka-adobe/hitachienergy/",
+      "libraryUrl": "https://main--sta-boilerplate--aemdemos.aem.page/tools/sidekick/library.json"
+    }
+  }
+}

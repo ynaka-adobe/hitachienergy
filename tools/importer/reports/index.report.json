@@ -1,0 +1,18 @@
+{
+  "status": "success",
+  "url": "https://powerportal.hitachienergy.com/",
+  "path": "index",
+  "timestamp": "2026-11-25T01:15:02.613Z",
+  "title": "Power Portal",
+  "template": "home",
+  "blocks": [
+    "hero-banner",
+    "hero-banner",
+    "cards-peekaboo",
+    "columns-media",
+    "cards-news-list",
+    "cards-event-carousel",
+    "cards-promo"
+  ],
+  "importScript": "6c1cabdb4834"
+}

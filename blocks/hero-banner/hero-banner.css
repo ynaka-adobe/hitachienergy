@@ -77,3 +77,239 @@
     padding: 64px 32px;
   }
 }
+
+/*
+ * Look: page stage — image + H1 + subheading, no CTA
+ * (Power Portal .page-stagev2). Mobile: image stacked above a gradient text box.
+ */
+.hero-banner:has(h1):not(:has(.button-container)) {
+  display: block;
+  height: auto;
+  padding: 0;
+  color: var(--text-color);
+  background-color: var(--color-primary-500);
+}
+
+.hero-banner:has(h1):not(:has(.button-container))::after {
+  content: none;
+}
+
+.hero-banner:has(h1):not(:has(.button-container)) picture {
+  position: static;
+  display: block;
+}
+
+.hero-banner:has(h1):not(:has(.button-container)) picture img {
+  display: block;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.hero-banner:has(h1):not(:has(.button-container)) > div > div:has(h1) {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 171px;
+  padding: 21px 28px;
+  background-color: var(--background-color);
+  background-image: linear-gradient(to right top, rgb(182 57 57), rgb(212 148 150), rgb(255 255 255), rgb(255 255 255), rgb(252 252 252), rgb(255 255 255), rgb(254 254 254), rgb(255 255 255));
+}
+
+.hero-banner:has(h1):not(:has(.button-container)) h1 {
+  max-width: none;
+  margin: 0 0 12px;
+  color: var(--text-color);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 40px;
+}
+
+.hero-banner:has(h1):not(:has(.button-container)) p {
+  max-width: none;
+  margin: 0 0 24px;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+/*
+ * Look: marketing banner — image + H2 + text + two CTAs
+ * (Power Portal .cmp-marketing-banner). Contained, rounded, dimmed photo.
+ */
+.hero-banner-container .hero-banner-wrapper:has(> .hero-banner .button-container + .button-container) {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 0;
+}
+
+.hero-banner:has(.button-container + .button-container) {
+  z-index: 0;
+  box-sizing: border-box;
+  height: auto;
+  min-height: 480px;
+  padding: 24px;
+  border-radius: 8px;
+  color: var(--color-white);
+}
+
+.hero-banner:has(.button-container + .button-container)::after {
+  background: rgb(0 0 0 / 20%);
+}
+
+.hero-banner:has(.button-container + .button-container) > div:has(h2, h3) {
+  display: flex;
+  flex: 1;
+  max-width: none;
+}
+
+.hero-banner:has(.button-container + .button-container) > div > div:has(h2, h3) {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.hero-banner:has(.button-container + .button-container) h2,
+.hero-banner:has(.button-container + .button-container) h3 {
+  max-width: none;
+  margin: 0 0 12px;
+  color: var(--color-white);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 40px;
+}
+
+.hero-banner:has(.button-container + .button-container) p {
+  max-width: none;
+  margin: 0;
+  padding: 0 0 16px;
+  font-size: 18px;
+  line-height: 27px;
+}
+
+.hero-banner:has(.button-container + .button-container) p.button-container {
+  align-self: center;
+  margin: 0;
+  padding: 0;
+}
+
+.hero-banner:has(.button-container + .button-container) p:not(.button-container) + p.button-container {
+  margin-top: auto;
+}
+
+.hero-banner:has(.button-container + .button-container) p.button-container + p.button-container {
+  margin-top: 24px;
+}
+
+main .hero-banner:has(.button-container + .button-container) a.button:any-link {
+  display: inline-flex;
+  border: var(--border-xs) solid var(--color-primary-500);
+  border-radius: var(--radius-pill);
+  padding: 8px 24px;
+  background-color: var(--color-white);
+  color: var(--color-primary-500);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+@media (width >= 900px) {
+  /* page stage: full-bleed 400px photo, translucent text box bottom-left */
+  .hero-banner:has(h1):not(:has(.button-container)) {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 400px;
+    padding: 0 32px;
+    color: var(--color-white);
+    z-index: 0;
+  }
+
+  .hero-banner:has(h1):not(:has(.button-container)) picture {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  .hero-banner:has(h1):not(:has(.button-container)) picture img {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+  }
+
+  .hero-banner:has(h1):not(:has(.button-container)) > div > div:has(h1) {
+    display: block;
+    max-width: 650px;
+    min-height: 0;
+    margin: 0 0 40px;
+    padding: 20px 24px;
+    border: var(--border-xs) solid var(--color-gray-300);
+    border-radius: 8px;
+    background-color: rgb(12 12 12 / 35%);
+    background-image: none;
+  }
+
+  .hero-banner:has(h1):not(:has(.button-container)) h1 {
+    color: var(--color-white);
+    font-size: 40px;
+    line-height: 50px;
+  }
+
+  .hero-banner:has(h1):not(:has(.button-container)) p {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  /* marketing banner: content vertically centred in the left half */
+  .hero-banner-container .hero-banner-wrapper:has(> .hero-banner .button-container + .button-container) {
+    padding: 0 32px;
+  }
+
+  .hero-banner:has(.button-container + .button-container) {
+    justify-content: center;
+    padding: 0 40px;
+  }
+
+  .hero-banner:has(.button-container + .button-container) > div:has(h2, h3) {
+    flex: 0 0 auto;
+  }
+
+  .hero-banner:has(.button-container + .button-container) > div > div:has(h2, h3) {
+    flex: 0 0 auto;
+    flex-flow: row wrap;
+    column-gap: 24px;
+    width: 50%;
+  }
+
+  .hero-banner:has(.button-container + .button-container) > div > div:has(h2, h3) > :not(.button-container) {
+    flex: 0 0 100%;
+  }
+
+  .hero-banner:has(.button-container + .button-container) h2,
+  .hero-banner:has(.button-container + .button-container) h3 {
+    font-size: 40px;
+    line-height: 50px;
+  }
+
+  .hero-banner:has(.button-container + .button-container) p:not(.button-container) {
+    margin-bottom: 40px;
+  }
+
+  .hero-banner:has(.button-container + .button-container) p:not(.button-container) + p.button-container,
+  .hero-banner:has(.button-container + .button-container) p.button-container + p.button-container {
+    align-self: auto;
+    margin: 0;
+  }
+}
+
+@media (width >= 1264px) {
+  .hero-banner:has(h1):not(:has(.button-container)) {
+    padding: 0;
+  }
+
+  .hero-banner-container .hero-banner-wrapper:has(> .hero-banner .button-container + .button-container) {
+    padding: 0;
+  }
+}

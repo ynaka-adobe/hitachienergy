@@ -1,0 +1,314 @@
+/* the carousel bleeds to the viewport edges like the source splide track */
+main > .section > .cards-event-carousel-wrapper {
+  max-width: 100%;
+  padding: 0;
+}
+
+.cards-event-carousel {
+  position: relative;
+  color: var(--color-gray-900);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.cards-event-carousel .cards-event-carousel-viewport {
+  overflow: hidden;
+  padding: 16px 24px;
+  touch-action: pan-y;
+}
+
+.cards-event-carousel .cards-event-carousel-track {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  will-change: transform;
+}
+
+.cards-event-carousel .cards-event-carousel-track.is-animating {
+  transition: transform 0.4s ease;
+}
+
+/* card */
+.cards-event-carousel .cards-event-carousel-card {
+  position: relative;
+  flex: 0 0 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-white);
+  border-radius: 8px;
+  box-shadow: rgb(0 0 0 / 40%) 0 1px 3.008px 0;
+  overflow: hidden;
+}
+
+/* image + overlay */
+.cards-event-carousel .cards-event-carousel-card-image {
+  position: relative;
+  height: 161px;
+  line-height: 0;
+}
+
+.cards-event-carousel .cards-event-carousel-card-image p {
+  margin: 0;
+}
+
+.cards-event-carousel .cards-event-carousel-card-image img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cards-event-carousel .cards-event-carousel-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  color: var(--color-white);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.cards-event-carousel .cards-event-carousel-location {
+  margin: 0;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* calendar pictogram */
+.cards-event-carousel .cards-event-carousel-badge {
+  position: relative;
+  flex: none;
+  box-sizing: border-box;
+  width: 64px;
+  height: 64px;
+  margin: 3px;
+  border-radius: 5px;
+  background: linear-gradient(#eb0023 0 17.78px, var(--color-gray-50) 17.78px);
+  box-shadow: 1px 1px 2px rgb(0 0 0 / 50%);
+  font-weight: 700;
+  text-align: center;
+}
+
+.cards-event-carousel .cards-event-carousel-badge-multiple {
+  margin: 12px 16px 4px 0;
+}
+
+.cards-event-carousel .cards-event-carousel-badge-multiple::before,
+.cards-event-carousel .cards-event-carousel-badge-multiple::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  width: 64px;
+  height: 64px;
+  border-radius: 5px;
+  background: inherit;
+  box-shadow: inherit;
+}
+
+.cards-event-carousel .cards-event-carousel-badge-multiple::before {
+  top: -12px;
+  left: 12px;
+}
+
+.cards-event-carousel .cards-event-carousel-badge-multiple::after {
+  top: -6px;
+  left: 6px;
+}
+
+.cards-event-carousel .cards-event-carousel-badge span {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.cards-event-carousel .cards-event-carousel-badge-month {
+  top: 4px;
+  color: var(--color-white);
+  font-size: 10px;
+  line-height: 12px;
+}
+
+.cards-event-carousel .cards-event-carousel-badge-day {
+  top: 27px;
+  color: var(--color-primary-500);
+  font-size: 22px;
+  line-height: 22px;
+}
+
+.cards-event-carousel .cards-event-carousel-badge-year {
+  top: 50px;
+  color: var(--color-gray-900);
+  font-size: 10px;
+  line-height: 12px;
+}
+
+.cards-event-carousel .cards-event-carousel-badge-ondemand .cards-event-carousel-badge-label {
+  top: 20px;
+  padding: 0 4px;
+  color: var(--color-primary-500);
+  font-size: 14px;
+  line-height: 15px;
+}
+
+/* body */
+.cards-event-carousel .cards-event-carousel-card-body {
+  display: flex;
+  flex: 1 1 0%;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 16px;
+}
+
+.cards-event-carousel .cards-event-carousel-card-body > * {
+  margin: 0;
+}
+
+.cards-event-carousel .cards-event-carousel-card-body .cards-event-carousel-title {
+  margin: 0 0 12px;
+  color: var(--color-gray-900);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 27px;
+}
+
+.cards-event-carousel .cards-event-carousel-title a:any-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.cards-event-carousel .cards-event-carousel-card-body .cards-event-carousel-description {
+  display: -webkit-box;
+  margin: 0 0 4px;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 21px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+}
+
+.cards-event-carousel .cards-event-carousel-card.active .cards-event-carousel-description {
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
+}
+
+.cards-event-carousel .cards-event-carousel-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.cards-event-carousel .cards-event-carousel-dates {
+  margin: 0;
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.cards-event-carousel .cards-event-carousel-arrow {
+  position: relative;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin-left: auto;
+  border-radius: 4px;
+  background-color: var(--color-gray-900);
+}
+
+/* stretch the card link over the whole card */
+.cards-event-carousel .cards-event-carousel-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+/* chevrons (material keyboard_arrow_left/right) */
+.cards-event-carousel .cards-event-carousel-arrow::before,
+.cards-event-carousel .cards-event-carousel-prev::before,
+.cards-event-carousel .cards-event-carousel-next::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  box-sizing: border-box;
+  width: 9px;
+  height: 9px;
+  border-top: 2px solid currentcolor;
+  border-right: 2px solid currentcolor;
+}
+
+.cards-event-carousel .cards-event-carousel-arrow::before {
+  color: var(--color-white);
+  transform: translate(-70%, -50%) rotate(45deg);
+}
+
+/* navigation */
+.cards-event-carousel .cards-event-carousel-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 4px 0 32px;
+}
+
+.cards-event-carousel .cards-event-carousel-counter {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.cards-event-carousel .cards-event-carousel-nav .cards-event-carousel-prev,
+.cards-event-carousel .cards-event-carousel-nav .cards-event-carousel-next {
+  position: relative;
+  box-sizing: border-box;
+  width: 32px;
+  min-height: 0;
+  height: 32px;
+  margin: 0;
+  padding: 4px;
+  border: 0;
+  border-radius: 8px;
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-900);
+  cursor: pointer;
+}
+
+.cards-event-carousel .cards-event-carousel-prev::before {
+  transform: translate(-30%, -50%) rotate(-135deg);
+}
+
+.cards-event-carousel .cards-event-carousel-next::before {
+  transform: translate(-70%, -50%) rotate(45deg);
+}
+
+@media (width >= 900px) {
+  /* fixed slide heights like the source: neighbours 254px, active 282px */
+  .cards-event-carousel .cards-event-carousel-card {
+    flex: 0 0 494px;
+    flex-direction: row;
+    height: 254px;
+  }
+
+  .cards-event-carousel .cards-event-carousel-card.active {
+    height: 282px;
+  }
+
+  .cards-event-carousel .cards-event-carousel-card-image {
+    flex: 0 0 50%;
+    height: auto;
+  }
+
+  .cards-event-carousel .cards-event-carousel-info {
+    margin-top: 30px;
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "variantName": "cards-event-carousel",
+  "baseBlock": "cards",
+  "version": "1.0.0",
+  "created": "2026-11-24T00:00:00.000Z",
+  "canonicalModel": "collection",
+  "sourceContext": {
+    "originUrl": "https://powerportal.hitachienergy.com/",
+    "originPage": "Hitachi Energy Power Portal homepage",
+    "blockPosition": "middle"
+  },
+  "visualCharacteristics": {
+    "colorScheme": "light-on-grey",
+    "density": "medium",
+    "purpose": "event carousel with calendar date badge",
+    "imagePattern": "large"
+  },
+  "contentPattern": {
+    "structure": "per event: image (+ optional location text) | title (heading, linked), description, date range dd.mm.yyyy - dd.mm.yyyy",
+    "columns": 2,
+    "imageCount": 1,
+    "buttonCount": 0,
+    "hasDescription": true,
+    "hasCTA": true
+  },
+  "options": [],
+  "memberVariantIds": [],
+  "reuseGuidance": {
+    "suitableFor": [
+      "upcoming events / trainings with start and end dates",
+      "horizontally sliding cards with prev/next and counter"
+    ],
+    "notSuitableFor": [
+      "static card grids",
+      "items without dates (badge is derived from the date range)"
+    ]
+  },
+  "usage": {
+    "pagesUsing": [
+      "/index"
+    ],
+    "reuseCount": 1,
+    "lastUsed": "2026-11-24T00:00:00.000Z"
+  }
+}
