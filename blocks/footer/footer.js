@@ -31,7 +31,7 @@ function resolveImages(root, base) {
 function decorateLinks(root) {
   root.querySelectorAll('a[href]').forEach((a) => {
     const href = a.getAttribute('href');
-    if (href === '#') {
+    if (href === '#' || a.classList.contains('footer-back-to-top')) {
       a.classList.add('footer-back-to-top');
       a.setAttribute('aria-label', a.querySelector('img')?.alt || 'Back to top');
       a.addEventListener('click', (e) => {
@@ -115,6 +115,14 @@ export default async function decorate(block) {
   const fragment = document.createElement('div');
   fragment.innerHTML = footer.html;
   resolveImages(fragment, footer.base);
+  // a section holding nothing but one image link is the back-to-top button
+  // (authoring tools may rewrite its "#" link to "/")
+  [...fragment.children].forEach((section) => {
+    const links = section.querySelectorAll('a');
+    if (links.length === 1 && links[0].querySelector('img') && !section.textContent.trim()) {
+      links[0].classList.add('footer-back-to-top');
+    }
+  });
   decorateLinks(fragment);
 
   const wrapper = document.createElement('div');

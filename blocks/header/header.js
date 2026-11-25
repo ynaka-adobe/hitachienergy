@@ -63,11 +63,13 @@ function buildLinkList(section, className) {
     const li = document.createElement('li');
     const img = a.querySelector('img');
     if (img) {
+      // the icon may arrive wrapped in a <picture> (Edge Delivery media)
+      const icon = img.closest('picture') || img;
       img.classList.add('nav-icon');
-      img.setAttribute('aria-hidden', 'true');
+      icon.setAttribute('aria-hidden', 'true');
       const label = document.createElement('span');
       label.className = 'nav-label';
-      [...a.childNodes].filter((n) => n !== img).forEach((n) => label.append(n));
+      [...a.childNodes].filter((n) => n !== icon).forEach((n) => label.append(n));
       a.append(label);
     }
     li.append(a);

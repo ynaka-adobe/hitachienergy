@@ -63,40 +63,6 @@ export function moveInstrumentation(from, to) {
   );
 }
 
-/**
- * Moves the given attributes from one element to another.
- * @param {Element} from the element to copy attributes from
- * @param {Element} to the element to copy attributes to
- * @param {string[]} [attributes] attributes to move (all if omitted)
- */
-export function moveAttributes(from, to, attributes) {
-  if (!from || !to) return;
-  const attrs = attributes || [...from.attributes].map(({ nodeName }) => nodeName);
-  attrs.forEach((attr) => {
-    const value = from.getAttribute(attr);
-    if (value !== null) {
-      to.setAttribute(attr, value);
-      from.removeAttribute(attr);
-    }
-  });
-}
-
-/**
- * Moves Universal Editor instrumentation attributes from one element to another.
- * @param {Element} from the element to move instrumentation from
- * @param {Element} to the element to move instrumentation to
- */
-export function moveInstrumentation(from, to) {
-  if (!from || !to) return;
-  moveAttributes(
-    from,
-    to,
-    [...from.attributes]
-      .map(({ nodeName }) => nodeName)
-      .filter((attr) => attr.startsWith('data-aue-') || attr.startsWith('data-richtext-')),
-  );
-}
-
 // --- BEGIN DM/Scene7 auto-block (excat-generated) ---
 
 const DM_BREAKPOINTS = [
