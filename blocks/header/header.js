@@ -7,6 +7,8 @@
  * layout and behaviour.
  */
 
+import { clearAudienceCache } from '../../scripts/audiences.js';
+
 const isDesktop = window.matchMedia('(width >= 900px)');
 
 /**
@@ -176,6 +178,10 @@ async function decorateAuth(list) {
   const icon = li.querySelector('.nav-icon')?.closest('picture') || li.querySelector('.nav-icon');
   li.textContent = '';
   li.classList.add('nav-auth');
+  // audiences (partners/employee) must re-read the session after sign in/out
+  li.addEventListener('click', (e) => {
+    if (e.target.closest('a[href^="/auth/"]')) clearAudienceCache();
+  });
 
   const returnTo = `${window.location.pathname}${window.location.search}`;
   const link = el(

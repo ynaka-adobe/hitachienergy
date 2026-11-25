@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Audiences</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="/tools/audiences/audiences.css">
+    <script src="/tools/audiences/audiences.js" type="module"></script>
+  </head>
+  <body>
+    <main class="aud-app">
+      <h1 class="aud-title">Audiences</h1>
+      <p class="aud-page" id="aud-page"></p>
+      <p class="aud-status" id="aud-status" role="status">Reading this page…</p>
+
+      <h2 class="aud-heading">Sections with audiences</h2>
+      <ul class="aud-list" id="aud-list"></ul>
+
+      <h2 class="aud-heading">Simulate a visitor</h2>
+      <div class="aud-sim">
+        <label for="aud-country">Country</label>
+        <select id="aud-country">
+          <option value="">Real (Okta profile, else CDN)</option>
+          <option value="US">United States (na)</option>
+          <option value="CA">Canada (na)</option>
+          <option value="MX">Mexico (na)</option>
+          <option value="JP">Japan (jp)</option>
+          <option value="DE">Germany (no region)</option>
+        </select>
+        <div class="aud-actions">
+          <button type="button" id="aud-apply">Apply</button>
+          <button type="button" id="aud-reset" class="aud-secondary">Reset</button>
+        </div>
+      </div>
+      <p class="aud-note">Opens this page with <code>?country=</code>. Group audiences (<code>partners</code>, <code>employee</code>) use your real Okta sign-in; use a section's Preview button to force one. Rows are in priority order: the first matching audience wins.</p>
+    </main>
+  </body>
+</html>

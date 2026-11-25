@@ -21,6 +21,7 @@ import {
   loadTarget,
   applyTargetHeroMboxIfConfigured,
 } from './target.js';
+import { applyAudiences } from './audiences.js';
 
 const { searchParams: nxParams, origin: pageOrigin } = new URL(window.location.href);
 const nxBranch = nxParams.get('nx') || 'main';
@@ -451,6 +452,7 @@ async function loadEager(doc) {
   }
   const main = doc.querySelector('main');
   if (main) {
+    await applyAudiences(main);
     decorateMain(main);
     // LCP: the first image of the first section loads eagerly with high priority
     const lcpImage = main.querySelector('.section img');
