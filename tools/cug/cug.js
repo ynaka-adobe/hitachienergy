@@ -8,6 +8,8 @@
  *
  * Saving only edits the DA sheet. Apply pushes the sheet to the site's
  * headers.json (Config Service), which is what the CDN/edge function reads.
+ * Apply and Remove also publish protected-paths.json (URL patterns only, no
+ * rules) so the site can mark links to restricted pages with a lock.
  */
 // eslint-disable-next-line import/no-unresolved
 import DA_SDK from 'https://da.live/nx/utils/sdk.js';
@@ -23,6 +25,7 @@ const HEADER_CUG_REQUIRED = 'x-aem-cug-required';
 const HEADER_CUG_GROUPS = 'x-aem-cug-groups';
 const HEADER_CUG_LOGIN_PATH = 'x-aem-cug-login-path';
 const SHEET_COLUMNS = ['url', 'cug-required', 'cug-groups', 'cug-login-path'];
+const PROTECTED_PATHS_SHEET = 'protected-paths.json';
 
 // ─── DOM helper ─────────────────────────────────────────────────────────────
 
@@ -151,6 +154,53 @@ async function postHeaders(org, site, headersConfig, token) {
   if (!resp.ok) {
     const body = await resp.text().catch(() => '');
     throw new Error(`Config Service POST failed: ${resp.status} ${resp.statusText} — ${body}`);
+  }
+}
+
+// ─── Public list of restricted paths (lock icons on links) ────────────────
+
+/** Paths only: never publish groups, countries or any other rule detail. */
+function protectedPaths(cugHeaders) {
+  return Object.entries(cugHeaders)
+    .filter(([, list]) => list.some((h) => h.key === HEADER_CUG_REQUIRED && h.value === 'true'))
+    .map(([path]) => path);
+}
+
+async function publishProtectedPaths(org, site, token, paths) {
+  const data = paths.map((path) => ({ path }));
+  const sheet = {
+    total: data.length,
+    limit: data.length,
+    offset: 0,
+    data,
+    ':colWidths': [260],
+    ':sheetname': 'data',
+    ':type': 'sheet',
+  };
+  const form = new FormData();
+  form.append('data', new Blob([JSON.stringify(sheet)], { type: 'application/json' }));
+  const auth = { Authorization: `Bearer ${token}` };
+  const saved = await fetch(`${DA_SOURCE_BASE}/${org}/${site}/${PROTECTED_PATHS_SHEET}`, {
+    method: 'POST', headers: auth, body: form,
+  });
+  if (!saved.ok) throw new Error(`saving ${PROTECTED_PATHS_SHEET} failed (${saved.status})`);
+  // eslint-disable-next-line no-restricted-syntax
+  for (const stage of ['preview', 'live']) {
+    // eslint-disable-next-line no-await-in-loop
+    const resp = await fetch(`${ADMIN_API_BASE}/${stage}/${org}/${site}/main/${PROTECTED_PATHS_SHEET}`, {
+      method: 'POST', headers: auth,
+    });
+    if (!resp.ok) throw new Error(`${stage} of ${PROTECTED_PATHS_SHEET} failed (${resp.status})`);
+  }
+}
+
+/** Never blocks Apply/Remove: the lock icons are cosmetic. */
+async function syncProtectedPaths(org, site, token, paths) {
+  try {
+    await publishProtectedPaths(org, site, token, paths);
+    return '';
+  } catch (err) {
+    return ` Lock icons were not updated: ${err.message}.`;
   }
 }
 
@@ -312,7 +362,8 @@ function renderApp(container, {
       const cugHeaders = transformToHeadersConfig(sheet.rows);
       const merged = mergeHeaders(await fetchExistingNonCugHeaders(org, site, token), cugHeaders);
       await postHeaders(org, site, merged, token);
-      setStatus('success', `Done — access restrictions applied to ${Object.keys(cugHeaders).length} restricted page(s) (${Object.keys(merged).length} total).`);
+      const warning = await syncProtectedPaths(org, site, token, protectedPaths(cugHeaders));
+      setStatus(warning ? 'error' : 'success', `Done — access restrictions applied to ${Object.keys(cugHeaders).length} restricted page(s) (${Object.keys(merged).length} total).${warning}`);
     } catch (err) {
       setStatus('error', `Error: ${err.message}`);
     } finally {
@@ -325,7 +376,8 @@ function renderApp(container, {
     setStatus('loading', 'Removing Page Access...');
     try {
       await postHeaders(org, site, await fetchExistingNonCugHeaders(org, site, token), token);
-      setStatus('success', 'Done — all CUG headers removed.');
+      const warning = await syncProtectedPaths(org, site, token, []);
+      setStatus(warning ? 'error' : 'success', `Done — all CUG headers removed.${warning}`);
     } catch (err) {
       setStatus('error', `Error: ${err.message}`);
     } finally {

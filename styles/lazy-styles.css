@@ -1,1 +1,14 @@
 /* add global styles that can be loaded post LCP here */
+
+/* lock after links to Page Access (CUG) pages, see scripts/protected-links.js */
+.restricted-icon {
+  display: inline-block;
+  margin-inline-start: 0.3em;
+  font-size: 0.85em;
+  line-height: 1;
+  vertical-align: -0.1em;
+}
+
+.restricted-icon svg {
+  display: block;
+}
