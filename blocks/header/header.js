@@ -70,6 +70,11 @@ function buildLinkList(section, className) {
       const label = document.createElement('span');
       label.className = 'nav-label';
       [...a.childNodes].filter((n) => n !== icon).forEach((n) => label.append(n));
+      // DA may author the label as a sibling paragraph of the icon link
+      const item = a.closest('li');
+      if (!label.textContent.trim() && item?.querySelectorAll('a').length === 1) {
+        label.textContent = item.textContent.trim();
+      }
       a.append(label);
     }
     li.append(a);
@@ -79,12 +84,27 @@ function buildLinkList(section, className) {
 }
 
 /**
- * Okta Sign in / Sign out control. Takes over an authored "Login"/"Sign in"
- * tool link (keeping its icon) or appends a new item to the tools list.
+ * Reads the Okta session from the edge function (/auth/me).
+ * Returns null where the function isn't routed (aem.page, aem.live, localhost).
+ * @returns {Promise<object|null>}
+ */
+async function fetchSession() {
+  try {
+    const resp = await fetch('/auth/me', { credentials: 'same-origin', cache: 'no-store' });
+    if (!resp.ok || !resp.headers.get('content-type')?.includes('json')) return null;
+    return await resp.json();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Okta Sign in / Sign out control backed by the edge function's /auth/* routes.
+ * Takes over an authored "Login"/"Sign in" tool link (keeping its icon) or
+ * prepends a new item to the tools list. Pages stay public either way.
  * @param {HTMLUListElement} list the tools list
  */
 async function decorateAuth(list) {
-  const { getUser, signIn, signOut } = await import('../../scripts/auth.js');
   const authored = [...list.querySelectorAll('li')]
     .find((li) => /^(log ?in|sign ?in)$/i.test(li.textContent.trim()));
   const li = authored || document.createElement('li');
@@ -92,26 +112,29 @@ async function decorateAuth(list) {
   li.textContent = '';
   li.classList.add('nav-auth');
 
-  const user = getUser();
-  if (user) {
-    const name = document.createElement('span');
-    name.className = 'nav-user';
-    name.textContent = `Hi, ${user.given_name || user.name || user.preferred_username || user.email}`;
-    li.append(name);
-  }
-
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'nav-auth-button';
-  if (icon) button.append(icon);
+  const link = document.createElement('a');
+  link.className = 'nav-auth-button';
+  if (icon) link.append(icon);
   const label = document.createElement('span');
   label.className = 'nav-label';
-  label.textContent = user ? 'Sign out' : 'Sign in';
-  button.append(label);
-  button.addEventListener('click', () => (user ? signOut() : signIn()));
-  li.append(button);
-
+  link.append(label);
+  const returnTo = `${window.location.pathname}${window.location.search}`;
+  const showSignIn = () => {
+    link.href = `/auth/login?returnTo=${encodeURIComponent(returnTo)}`;
+    label.textContent = 'Sign in';
+  };
+  showSignIn();
+  li.append(link);
   if (!authored) list.prepend(li);
+
+  const session = await fetchSession();
+  if (!session?.authenticated) return;
+  const name = document.createElement('span');
+  name.className = 'nav-user';
+  name.textContent = `Hi, ${session.name || session.email || 'there'}`;
+  li.prepend(name);
+  link.href = '/auth/logout';
+  label.textContent = 'Sign out';
 }
 
 function toggleMenu(header, forceOpen) {
