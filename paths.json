@@ -1,6 +1,7 @@
 {
   "mappings": [
-    "/content/forms/af/:/forms/"
+    "/content/forms/af/:/forms/",
+    "/content/forms/af/warranty--complaint---return-intake:/forms/warranty-complaint-return-intake"
   ],
   "includes": [
     "/content/forms/af/"
