@@ -37,3 +37,13 @@ export async function fetchSiteFragment(name) {
     return resp.ok ? { html: await resp.text(), base: resp.url } : null;
   }, Promise.resolve(null));
 }
+
+const LANGS = { en: 'en', jp: 'ja' };
+
+/**
+ * Returns the page language: `lang` metadata, else the locale folder's language, else "en".
+ * @returns {string}
+ */
+export function getLanguage() {
+  return getMetadata('lang') || LANGS[getLocale()] || 'en';
+}

@@ -22,6 +22,7 @@ import {
   applyTargetHeroMboxIfConfigured,
 } from './target.js';
 import { applyAudiences } from './audiences.js';
+import { getLanguage } from './locale.js';
 
 const { searchParams: nxParams, origin: pageOrigin } = new URL(window.location.href);
 const nxBranch = nxParams.get('nx') || 'main';
@@ -445,7 +446,7 @@ export function decorateMain(main) {
  * @param {Element} doc The container element
  */
 async function loadEager(doc) {
-  doc.documentElement.lang = 'en';
+  doc.documentElement.lang = getLanguage();
   decorateTemplateAndTheme();
   if (getMetadata('breadcrumbs').toLowerCase() === 'true') {
     doc.body.dataset.breadcrumbs = true;
