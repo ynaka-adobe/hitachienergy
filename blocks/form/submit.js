@@ -1,6 +1,6 @@
 import { DEFAULT_THANK_YOU_MESSAGE, getSubmitBaseUrl } from './constant.js';
 
-export function submitSuccess(e, form) {
+export function submitSuccess(e, form, resetDom = true) {
   const { payload } = e;
   const redirectUrl = form.dataset.redirectUrl || payload?.body?.redirectUrl;
   const thankYouMsg = form.dataset.thankYouMsg || payload?.body?.thankYouMessage;
@@ -18,7 +18,7 @@ export function submitSuccess(e, form) {
       thankYouMessage.scrollIntoView({ behavior: 'smooth' });
     }
     // A field named "reset" shadows form.reset, so call the prototype method.
-    HTMLFormElement.prototype.reset.call(form);
+    if (resetDom) HTMLFormElement.prototype.reset.call(form);
   }
   form.setAttribute('data-submitting', 'false');
   form.querySelector('button[type="submit"]').disabled = false;

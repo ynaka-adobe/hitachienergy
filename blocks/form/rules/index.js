@@ -353,8 +353,9 @@ async function submitToRestEndpoint(htmlForm, form) {
   }
   if (resp.ok && body.success !== false) {
     htmlForm.querySelector('.form-message.error-message')?.remove();
-    submitSuccess({ payload: { body } }, htmlForm);
-    // Clear the model too; resetting the DOM alone leaves the previous values in it.
+    // Reset via the model (it syncs the DOM). A DOM reset would make form.js rebuild
+    // the form without the rule engine, so later submits would never reach this handler.
+    submitSuccess({ payload: { body } }, htmlForm, false);
     form.reset();
   } else {
     submitFailure({ payload: { body, status: resp.status } }, htmlForm);
