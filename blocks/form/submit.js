@@ -17,7 +17,8 @@ export function submitSuccess(e, form) {
     if (thankYouMessage.scrollIntoView) {
       thankYouMessage.scrollIntoView({ behavior: 'smooth' });
     }
-    form.reset();
+    // A field named "reset" shadows form.reset, so call the prototype method.
+    HTMLFormElement.prototype.reset.call(form);
   }
   form.setAttribute('data-submitting', 'false');
   form.querySelector('button[type="submit"]').disabled = false;

@@ -338,20 +338,26 @@ async function submitToRestEndpoint(htmlForm, form) {
     });
     return;
   }
+  let resp;
+  let body = {};
   try {
-    const resp = await fetch(htmlForm.dataset.restSubmitUrl, {
+    resp = await fetch(htmlForm.dataset.restSubmitUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(flattenFormData(form.exportData())),
     });
-    const body = await resp.json().catch(() => ({}));
-    if (resp.ok && body.success !== false) {
-      submitSuccess({ payload: { body } }, htmlForm);
-    } else {
-      submitFailure({ payload: { body, status: resp.status } }, htmlForm);
-    }
+    body = await resp.json().catch(() => ({}));
   } catch (err) {
     submitFailure({ payload: { error: err } }, htmlForm);
+    return;
+  }
+  if (resp.ok && body.success !== false) {
+    htmlForm.querySelector('.form-message.error-message')?.remove();
+    submitSuccess({ payload: { body } }, htmlForm);
+    // Clear the model too; resetting the DOM alone leaves the previous values in it.
+    form.reset();
+  } else {
+    submitFailure({ payload: { body, status: resp.status } }, htmlForm);
   }
 }
 
