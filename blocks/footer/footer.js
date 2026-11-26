@@ -1,21 +1,19 @@
 /*
  * Footer block.
- * Reads the footer fragment (content/footer.plain.html) and renders each
+ * Reads the footer fragment (/<locale>/footer, else /footer) and renders each
  * top-level section as a full-width band with a centred content column.
  * All copy, links and images come from the fragment; this file only adds
  * layout classes and behaviour (back to top, new-tab external links).
  */
 
+import { fetchSiteFragment } from '../../scripts/locale.js';
+
 /**
- * Fetches the footer fragment. Metadata-independent dual fetch:
- * /content first (local preview), then the site root (DA / Edge Delivery).
+ * Fetches the footer fragment (metadata, then locale folder, then site root).
  * @returns {Promise<{html: string, base: string}|null>}
  */
-async function fetchFooter() {
-  let resp = await fetch('/content/footer.plain.html');
-  if (!resp.ok) resp = await fetch('/footer.plain.html');
-  if (!resp.ok) return null;
-  return { html: await resp.text(), base: resp.url };
+function fetchFooter() {
+  return fetchSiteFragment('footer');
 }
 
 function resolveImages(root, base) {
