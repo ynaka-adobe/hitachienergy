@@ -1,6 +1,6 @@
 /*
  * Header block.
- * Reads the nav fragment (content/nav.plain.html) and renders:
+ * Reads the nav fragment (/<locale>/nav, else /nav) and renders:
  *   - top bar: first section (brand/logo) + second section (tool links with icons)
  *   - site bar: remaining sections (site name link, optional nav lists)
  * All copy, links and images come from the fragment; this file only builds
@@ -8,19 +8,16 @@
  */
 
 import { clearAudienceCache } from '../../scripts/audiences.js';
+import { fetchSiteFragment } from '../../scripts/locale.js';
 
 const isDesktop = window.matchMedia('(width >= 900px)');
 
 /**
- * Fetches the nav fragment. Metadata-independent dual fetch:
- * /content first (local preview), then the site root (DA / Edge Delivery).
+ * Fetches the nav fragment (metadata, then locale folder, then site root).
  * @returns {Promise<{html: string, base: string}|null>}
  */
-async function fetchNav() {
-  let resp = await fetch('/content/nav.plain.html');
-  if (!resp.ok) resp = await fetch('/nav.plain.html');
-  if (!resp.ok) return null;
-  return { html: await resp.text(), base: resp.url };
+function fetchNav() {
+  return fetchSiteFragment('nav');
 }
 
 /**
