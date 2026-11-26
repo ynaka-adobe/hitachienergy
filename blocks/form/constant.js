@@ -82,8 +82,20 @@ const REST_SUBMIT_ACTIONS = {
 export function getRestSubmitUrl(formDef) {
   const props = formDef?.properties || {};
   const submit = props['fd:submit'] || {};
-  return submit.restEndpointPostUrl || props.restEndpointPostUrl
-    || REST_SUBMIT_ACTIONS[props['fd:path']] || '';
+  if (submit.restEndpointPostUrl || props.restEndpointPostUrl) {
+    return submit.restEndpointPostUrl || props.restEndpointPostUrl;
+  }
+  // AF form ids (and the default submit action) are the base64-encoded form path.
+  const encoded = [formDef?.id, formDef?.action?.split('/').pop()];
+  const paths = [props['fd:path'], ...encoded.map((value) => {
+    try {
+      return value ? atob(value) : '';
+    } catch (e) {
+      return '';
+    }
+  })];
+  const match = paths.find((path) => path && REST_SUBMIT_ACTIONS[path.replace(/\/jcr:content.*$/, '')]);
+  return match ? REST_SUBMIT_ACTIONS[match.replace(/\/jcr:content.*$/, '')] : '';
 }
 
 export function setSubmitBaseUrl(url) {
