@@ -1,0 +1,119 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Adobe Clean', adobe-clean, 'Trebuchet MS', sans-serif;
+  padding: 20px;
+  color: #2c2c2c;
+  background: #fff;
+  font-size: 14px;
+}
+
+h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.description {
+  font-size: 13px;
+  color: #6e6e6e;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.toolbar input {
+  flex: 1;
+  min-width: 0;
+}
+
+input,
+select,
+button {
+  font: inherit;
+  padding: 6px 10px;
+  border: 1px solid #b1b1b1;
+  border-radius: 4px;
+  background: #fff;
+}
+
+button {
+  cursor: pointer;
+}
+
+button.primary {
+  background: #3b63fb;
+  border-color: #3b63fb;
+  color: #fff;
+}
+
+.status {
+  font-size: 13px;
+  color: #6e6e6e;
+  margin-bottom: 12px;
+}
+
+.status.error {
+  color: #d31510;
+}
+
+.results {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.submissions th,
+.submissions td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid #e1e1e1;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.submissions thead th {
+  font-weight: 700;
+  background: #f5f5f5;
+}
+
+.detail-row > td {
+  background: #fafafa;
+  white-space: normal;
+}
+
+.details th,
+.details td {
+  padding: 4px 8px;
+  border: 0;
+  font-size: 13px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.details th {
+  width: 220px;
+  color: #6e6e6e;
+  font-weight: 400;
+}
+
+.toggle {
+  padding: 2px 8px;
+  font-size: 13px;
+}
+
+.empty {
+  color: #6e6e6e;
+}
