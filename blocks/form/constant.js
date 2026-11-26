@@ -73,6 +73,19 @@ export const SUBMISSION_SERVICE = 'https://forms.adobe.com/adobe/forms/af/submit
 // Submit action types routed to the submission service.
 export const SUPPORTED_SUBMISSION_ACTION_TYPES = ['spreadsheet', 'aep'];
 
+// REST endpoint submit actions keyed by AEM form path. The author-side
+// "Submit to REST endpoint" URL isn't exported in the form JSON, so it's mapped here.
+const REST_SUBMIT_ACTIONS = {
+  '/content/forms/af/warranty--complaint---return-intake': 'https://332794-perusermetadata.adobeioruntime.net/api/v1/web/per-user-metadata/warranty-submit',
+};
+
+export function getRestSubmitUrl(formDef) {
+  const props = formDef?.properties || {};
+  const submit = props['fd:submit'] || {};
+  return submit.restEndpointPostUrl || props.restEndpointPostUrl
+    || REST_SUBMIT_ACTIONS[props['fd:path']] || '';
+}
+
 export function setSubmitBaseUrl(url) {
   submitBaseUrl = url;
 }

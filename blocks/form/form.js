@@ -1,7 +1,8 @@
 import { createOptimizedPicture, loadCSS } from '../../scripts/aem.js';
 import transferRepeatableDOM, { insertAddButton, insertRemoveButton } from './components/repeat/repeat.js';
 import {
-  emailPattern, getSubmitBaseUrl, SUBMISSION_SERVICE, SUPPORTED_SUBMISSION_ACTION_TYPES,
+  emailPattern, getRestSubmitUrl, getSubmitBaseUrl, SUBMISSION_SERVICE,
+  SUPPORTED_SUBMISSION_ACTION_TYPES,
 } from './constant.js';
 import GoogleReCaptcha from './integrations/recaptcha.js';
 import componentDecorator from './mappings.js';
@@ -561,6 +562,8 @@ async function setupForm(formDef, { pathname, block, editMode = false } = {}) {
   form.dataset.thankYouMsg = def.thankYouMsg || '';
   form.dataset.action = def.action || pathname?.split('.json')[0];
   form.dataset.id = def.id;
+  const restSubmitUrl = getRestSubmitUrl(def);
+  if (restSubmitUrl) form.dataset.restSubmitUrl = restSubmitUrl;
   return { form, afbForm };
 }
 

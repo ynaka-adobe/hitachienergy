@@ -306,6 +306,55 @@ function handleRuleEngineEvent(e, form, generateFormRendition) {
   }
 }
 
+// Flattens exportData() into the primitive key/value JSON a REST endpoint expects.
+// Files become their names; other arrays are comma-joined.
+function flattenFormData(data, out = {}) {
+  Object.entries(data || {}).forEach(([key, value]) => {
+    if (value === null || value === undefined || key.startsWith('__')) return;
+    if (Array.isArray(value)) {
+      const parts = value.map((v) => (v && typeof v === 'object' ? v.name : v))
+        .filter((v) => v !== undefined && v !== null && v !== '');
+      if (parts.length) out[key] = parts.join(', ');
+    } else if (typeof value === 'object') {
+      if (typeof value.name === 'string' && ('size' in value || 'type' in value)) {
+        out[key] = value.name;
+      } else {
+        flattenFormData(value, out);
+      }
+    } else {
+      out[key] = value;
+    }
+  });
+  return out;
+}
+
+async function submitToRestEndpoint(htmlForm, form) {
+  const errors = form.validate();
+  if (errors?.length) {
+    // handleSubmit() marks the form as submitting after this click handler; undo that.
+    setTimeout(() => {
+      htmlForm.setAttribute('data-submitting', 'false');
+      htmlForm.querySelector('button[type="submit"]')?.removeAttribute('disabled');
+    });
+    return;
+  }
+  try {
+    const resp = await fetch(htmlForm.dataset.restSubmitUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(flattenFormData(form.exportData())),
+    });
+    const body = await resp.json().catch(() => ({}));
+    if (resp.ok && body.success !== false) {
+      submitSuccess({ payload: { body } }, htmlForm);
+    } else {
+      submitFailure({ payload: { body, status: resp.status } }, htmlForm);
+    }
+  } catch (err) {
+    submitFailure({ payload: { error: err } }, htmlForm);
+  }
+}
+
 function applyRuleEngine(htmlForm, form, captcha) {
   htmlForm.addEventListener('change', (e) => {
     const field = e.target;
@@ -343,6 +392,10 @@ function applyRuleEngine(htmlForm, form, captcha) {
       if (e.target.type === 'submit' && captcha) {
         const token = await captcha.getToken();
         form.getElement(captcha.id).value = token;
+      }
+      if (e.target.type === 'submit' && htmlForm.dataset.restSubmitUrl) {
+        await submitToRestEndpoint(htmlForm, form);
+        return;
       }
       if (element) {
         element.dispatch({ type: 'click' });
