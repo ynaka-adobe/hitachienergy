@@ -1,7 +1,7 @@
 import { createOptimizedPicture, loadCSS } from '../../scripts/aem.js';
 import transferRepeatableDOM, { insertAddButton, insertRemoveButton } from './components/repeat/repeat.js';
 import {
-  emailPattern, getRestSubmitUrl, getSubmitBaseUrl, setSubmitBaseUrl, SUBMISSION_SERVICE,
+  emailPattern, getRestSubmitUrl, getSubmitBaseUrl, SUBMISSION_SERVICE,
   SUPPORTED_SUBMISSION_ACTION_TYPES,
 } from './constant.js';
 import GoogleReCaptcha from './integrations/recaptcha.js';
@@ -25,9 +25,6 @@ import {
   createRadioOrCheckbox,
   createInput,
 } from './util.js';
-
-// AEM Forms submit actions (e.g. Invoke AEM Workflow) are posted to AEM publish.
-setSubmitBaseUrl('https://publish-p154856-e1944736.adobeaemcloud.com');
 
 export const DELAY_MS = 0;
 let captchaField;
