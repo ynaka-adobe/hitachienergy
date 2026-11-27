@@ -41,14 +41,118 @@ function cellValue(record, key) {
   return value == null ? '—' : String(value);
 }
 
-function detailsTable(data) {
-  const rows = Object.entries(data || {}).map(([key, value]) => el(
-    'tr',
-    {},
-    el('th', {}, key),
-    el('td', {}, value == null ? '' : String(value)),
-  ));
-  return el('table', { class: 'details' }, el('tbody', {}, ...rows));
+// Detail view groups; any unlisted form field is shown in the "fallback" group.
+const DETAIL_GROUPS = [
+  {
+    title: 'Request info',
+    fields: [
+      ['request_type', 'Request type'],
+      ['reference_number', 'Reference number'],
+      ['product_type', 'Product type'],
+      ['serial_number', 'Serial number'],
+      ['quantity', 'Quantity'],
+      ['delivery_date', 'Delivery date'],
+      ['incident_date', 'Incident date'],
+    ],
+    fallback: true,
+  },
+  {
+    title: 'User info',
+    fields: [
+      ['company_name', 'Company'],
+      ['country', 'Country'],
+      ['customer_type', 'Customer type'],
+      ['contact_name', 'Contact name'],
+      ['email', 'Email'],
+      ['phone', 'Phone'],
+    ],
+  },
+  {
+    title: 'Summary',
+    fields: [
+      ['caseId', 'Case ID'],
+      ['timestamp', 'Submitted'],
+      ['consent', 'Consent'],
+    ],
+  },
+  {
+    title: 'Message',
+    fields: [
+      ['subject', 'Subject'],
+      ['description', 'Description'],
+      ['attachments', 'Attachments'],
+    ],
+  },
+];
+
+const VALUE_LABELS = {
+  request_type: { warranty: 'Warranty claim', complaint: 'Complaint', return: 'Return' },
+  customer_type: {
+    internal_hitachi: 'Internal (Hitachi)',
+    external_oem: 'External – OEM',
+    external_other: 'External – other',
+  },
+  consent: { yes: 'Given', true: 'Given' },
+};
+
+let regionNames;
+function countryName(code) {
+  if (!/^[a-z]{2}$/i.test(code)) return humanize(code);
+  try {
+    regionNames ??= new Intl.DisplayNames(['en'], { type: 'region' });
+    return `${regionNames.of(code.toUpperCase())} (${code.toUpperCase()})`;
+  } catch {
+    return code.toUpperCase();
+  }
+}
+
+function humanize(value) {
+  const text = String(value).replace(/_/g, ' ');
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+function displayValue(key, value) {
+  if (value == null || value === '') return null;
+  if (key === 'timestamp') return formatDate(value);
+  if (key === 'country') return countryName(String(value));
+  const labels = VALUE_LABELS[key];
+  if (labels) return labels[String(value).toLowerCase()] || humanize(value);
+  return String(value);
+}
+
+function valueNode(key, text) {
+  if (key === 'email') return el('a', { href: `mailto:${text}` }, text);
+  if (key === 'phone') return el('a', { href: `tel:${text.replace(/[^\d+]/g, '')}` }, text);
+  return text;
+}
+
+function detailsView(record) {
+  const data = { ...(record.data || {}), caseId: record.caseId, timestamp: record.timestamp };
+  const known = new Set(DETAIL_GROUPS.flatMap((g) => g.fields.map(([key]) => key)));
+  const extras = Object.keys(data)
+    .filter((key) => !known.has(key) && !key.startsWith('__'))
+    .map((key) => [key, humanize(key)]);
+  const requestType = displayValue('request_type', data.request_type);
+
+  const columns = DETAIL_GROUPS.map((group) => {
+    const fields = group.fallback ? [...group.fields, ...extras] : group.fields;
+    const items = fields.flatMap(([key, label]) => {
+      const text = displayValue(key, data[key]);
+      if (text == null) return [];
+      return [el('dt', {}, label), el('dd', { class: `field-${key}` }, valueNode(key, text))];
+    });
+    return el(
+      'section',
+      { class: 'detail-col' },
+      el('h3', {}, group.title),
+      items.length ? el('dl', {}, ...items) : el('p', { class: 'none' }, 'No details'),
+    );
+  });
+  // Show the request type as a badge on the summary column instead of repeating the field.
+  if (requestType) {
+    columns[2].querySelector('h3').append(' ', el('span', { class: `badge badge-${String(data.request_type).toLowerCase()}` }, requestType));
+  }
+  return el('div', { class: 'details' }, ...columns);
 }
 
 function renderTable(container, submissions, filter) {
@@ -60,7 +164,7 @@ function renderTable(container, submissions, filter) {
     const detailRow = el(
       'tr',
       { class: 'detail-row', hidden: true },
-      el('td', { colspan: String(COLUMNS.length + 1) }, detailsTable(record.data)),
+      el('td', { colspan: String(COLUMNS.length + 1) }, detailsView(record)),
     );
     const toggle = el('button', {
       type: 'button',
