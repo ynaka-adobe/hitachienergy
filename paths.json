@@ -1,7 +1,8 @@
 {
   "mappings": [
     "/content/forms/af/:/forms/",
-    "/content/forms/af/warranty--complaint---return-intake:/forms/warranty-complaint-return-intake"
+    "/content/forms/af/warranty--complaint---return-intake:/forms/warranty-complaint-return-intake",
+    "/content/forms/af/revised-po---order-change-request:/forms/revised-po-order-change-request"
   ],
   "includes": [
     "/content/forms/af/"
