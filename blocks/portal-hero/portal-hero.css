@@ -182,8 +182,71 @@ main > .section.portal-hero-container > .portal-hero-wrapper {
   background: var(--color-primary-500) !important;
 }
 
+/* suggested chat prompts: outline chips with a sparkle, inside the dark band */
+.portal-hero .portal-hero-prompts-title {
+  margin: 24px 0 10px;
+  color: var(--color-gray-300, #ccc);
+  font-size: 14px;
+}
+
+.portal-hero .portal-hero-prompts ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.portal-hero button.portal-hero-prompt {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 0;
+  margin: 0;
+  padding: 7px 16px;
+  border: 1px solid rgb(255 255 255 / 45%);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-white);
+  font: inherit;
+  font-size: 15px;
+  line-height: 20px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.portal-hero button.portal-hero-prompt::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  background: var(--color-primary-500);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4zM19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.portal-hero button.portal-hero-prompt:hover,
+.portal-hero button.portal-hero-prompt:focus-visible {
+  border-color: var(--color-white);
+  background: rgb(255 255 255 / 10%);
+}
+
+/* quicklinks: light strip below the dark band */
+.portal-hero .portal-hero-links {
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-gray-200, #e0e0e0);
+}
+
+.portal-hero .portal-hero-links-inner {
+  box-sizing: border-box;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 20px 24px 24px;
+}
+
 .portal-hero .portal-hero-quicklinks-title {
-  margin: 28px 0 12px;
+  margin: 0 0 12px;
+  color: var(--color-gray-900);
   font-size: 16px;
   font-weight: 700;
 }
@@ -200,7 +263,7 @@ main > .section.portal-hero-container > .portal-hero-wrapper {
 .portal-hero a.portal-hero-pill:any-link {
   display: inline-block;
   padding: 6px 16px;
-  border: 1px solid var(--color-white);
+  border: 1px solid var(--color-gray-900);
   border-radius: 999px;
   background: var(--color-white);
   color: var(--color-gray-900);
@@ -257,10 +320,15 @@ main > .section.portal-hero-container > .portal-hero-wrapper {
   .portal-hero .portal-hero-notice {
     padding: 16px 32px 0;
   }
+
+  .portal-hero .portal-hero-links-inner {
+    padding: 24px 32px 28px;
+  }
 }
 
 @media (width >= 1264px) {
   .portal-hero .portal-hero-inner,
+  .portal-hero .portal-hero-links-inner,
   .portal-hero .portal-hero-notice {
     padding-right: 0;
     padding-left: 0;
