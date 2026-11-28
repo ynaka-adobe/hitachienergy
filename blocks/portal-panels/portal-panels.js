@@ -14,6 +14,11 @@ function el(tag, attrs = {}, ...children) {
 }
 
 function decorateSlide(cell) {
+  // aem.js wraps a cell that starts with an inline <picture> in one <p>;
+  // unwrap it when it holds block content so the slide parts stay siblings.
+  cell.querySelectorAll(':scope > p').forEach((p) => {
+    if (p.querySelector(':scope > :is(p, h2, h3, h4, h5, h6, ul, ol, div)')) p.replaceWith(...p.childNodes);
+  });
   const slide = el('div', { class: 'portal-panels-slide' }, ...cell.childNodes);
   const heading = slide.querySelector('h2, h3, h4, h5, h6');
   if (heading?.querySelector('a')) {
