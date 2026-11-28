@@ -13,7 +13,8 @@ export function getLocale() {
 
 /**
  * Fetches a site fragment (nav, footer) as .plain.html.
- * Order: page metadata path, then /<locale>/<name>, then /<name>.
+ * Order: page metadata path, then /<locale>/<name>, then /forms/nav (nav on /forms/ pages),
+ * then /<name>.
  * @param {string} name fragment name, also the metadata key
  * @returns {Promise<{html: string, base: string}|null>}
  */
@@ -27,6 +28,7 @@ export async function fetchSiteFragment(name) {
   }
   const locale = getLocale();
   if (locale) candidates.push(`/${locale}/${name}`);
+  if (name === 'nav' && window.location.pathname.startsWith('/forms/')) candidates.push('/forms/nav');
   candidates.push(`/${name}`);
 
   const paths = [...new Set(candidates.map((p) => p.replace(/(\.plain)?\.html$/, '')))];
