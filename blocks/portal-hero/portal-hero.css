@@ -1,0 +1,198 @@
+/* full-bleed dark band, grey backdrop for the notice */
+main > .section.portal-hero-container {
+  margin: 0;
+  background: var(--color-gray-50);
+}
+
+main > .section.portal-hero-container > .portal-hero-wrapper {
+  max-width: none;
+  padding: 0;
+}
+
+.portal-hero .portal-hero-band {
+  background: var(--color-gray-900);
+  color: var(--color-white);
+}
+
+.portal-hero .portal-hero-inner {
+  box-sizing: border-box;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 40px 24px 48px;
+}
+
+.portal-hero .portal-hero-greeting {
+  margin: 0 0 20px;
+  color: inherit;
+  font-size: 36px;
+  line-height: 1.2;
+}
+
+.portal-hero .portal-hero-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.portal-hero .portal-hero-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--color-white);
+}
+
+.portal-hero .portal-hero-search input {
+  flex: 1;
+  min-width: 0;
+  height: 52px;
+  padding: 0 16px;
+  border: 0;
+  background: transparent;
+  color: var(--color-gray-900);
+  font: inherit;
+}
+
+.portal-hero .portal-hero-search input:focus-visible {
+  outline: 2px solid var(--color-focus-500);
+  outline-offset: -2px;
+}
+
+.portal-hero .portal-hero-search button {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  min-height: 0;
+  margin: 0 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-gray-900);
+  cursor: pointer;
+}
+
+.portal-hero .portal-hero-search button::before {
+  content: '';
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin: auto;
+  background: var(--color-white);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5 21 21'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.portal-hero .portal-hero-search button:hover {
+  background: var(--color-primary-500);
+}
+
+.portal-hero .portal-hero-suggestions {
+  position: absolute;
+  z-index: 5;
+  top: 100%;
+  right: 0;
+  left: 0;
+  margin: 0;
+  padding: 8px 0;
+  list-style: none;
+  background: var(--color-white);
+  box-shadow: 0 8px 16px rgb(0 0 0 / 20%);
+}
+
+.portal-hero .portal-hero-suggestions a {
+  display: block;
+  padding: 8px 16px;
+  color: var(--color-gray-900);
+  text-decoration: none;
+}
+
+.portal-hero .portal-hero-suggestions a:hover,
+.portal-hero .portal-hero-suggestions a:focus-visible {
+  background: var(--color-primary-100);
+}
+
+.portal-hero .portal-hero-quicklinks-title {
+  margin: 28px 0 12px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.portal-hero .portal-hero-quicklinks ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.portal-hero a.portal-hero-pill:any-link {
+  display: inline-block;
+  padding: 6px 16px;
+  border: 1px solid var(--color-white);
+  border-radius: 999px;
+  background: var(--color-white);
+  color: var(--color-gray-900);
+  font-size: 15px;
+  line-height: 20px;
+  text-decoration: none;
+}
+
+.portal-hero a.portal-hero-pill:hover,
+.portal-hero a.portal-hero-pill:focus-visible {
+  border-color: var(--color-primary-500);
+  background: var(--color-primary-500);
+  color: var(--color-white);
+}
+
+.portal-hero .portal-hero-notice {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: 16px 24px 0;
+}
+
+.portal-hero .portal-hero-notice-icon {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  background: var(--color-gray-700);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Cpath d='M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.portal-hero .portal-hero-notice-text {
+  flex: 1;
+  padding: 20px 24px;
+  background: var(--color-white);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 15%);
+}
+
+.portal-hero .portal-hero-notice-text p {
+  margin: 0;
+}
+
+@media (width >= 900px) {
+  .portal-hero .portal-hero-inner {
+    padding: 48px 32px 64px;
+  }
+
+  .portal-hero .portal-hero-greeting {
+    font-size: 44px;
+  }
+
+  .portal-hero .portal-hero-notice {
+    padding: 16px 32px 0;
+  }
+}
+
+@media (width >= 1264px) {
+  .portal-hero .portal-hero-inner,
+  .portal-hero .portal-hero-notice {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
