@@ -5,6 +5,7 @@
  * | Portal Hero |                      |                        |
  * | greeting    | Hi, {name}           | Welcome, partner       |
  * | search      | How can we help you? | search URL with {q}    |
+ * | prompts     | Try asking           | list of questions      |
  * | quicklinks  | Quicklinks           | list of links          |
  * | notice      | No notifications at this time                 |
  * {name} is the signed-in user's first name from /auth/me; otherwise the
@@ -15,6 +16,10 @@
  * search row becomes a chat box that asks the widget via `fb-widget-ask`. The
  * key lives in DA metadata, not in code. Optional `chatbot-theme` sets
  * data-fb-theme. The search row's third cell is the disclaimer.
+ *
+ * Prompts render as suggested-question chips under the search/chat box;
+ * clicking one fills the box and submits it. Quicklinks render in a light
+ * strip below the dark band so they don't read as prompts.
  */
 import { getMetadata } from '../../scripts/aem.js';
 
@@ -209,6 +214,32 @@ function buildChat(cells, src) {
   return [form, el('p', { class: 'portal-hero-disclaimer' }, ...disclaimer)];
 }
 
+function buildPrompts(cells, form) {
+  const title = cells[0]?.textContent.trim() || 'Try asking';
+  const source = cells[1] || cells[0];
+  const items = source.querySelectorAll('li').length
+    ? [...source.querySelectorAll('li')]
+    : [...source.querySelectorAll('p')];
+  const questions = items.map((i) => i.textContent.trim()).filter(Boolean);
+  if (!questions.length || !form) return null;
+  const field = form.querySelector('textarea, input');
+  const chips = questions.map((question) => {
+    const chip = el('button', { type: 'button', class: 'portal-hero-prompt' }, question);
+    chip.addEventListener('click', () => {
+      field.value = question;
+      field.dispatchEvent(new Event('input'));
+      form.requestSubmit();
+    });
+    return el('li', {}, chip);
+  });
+  return el(
+    'div',
+    { class: 'portal-hero-prompts' },
+    el('p', { class: 'portal-hero-prompts-title' }, title),
+    el('ul', {}, ...chips),
+  );
+}
+
 function buildQuicklinks(cells) {
   const title = cells[0]?.textContent.trim() || 'Quicklinks';
   const source = cells[1] || cells[0];
@@ -243,12 +274,27 @@ export default function decorate(block) {
   const inner = el('div', { class: 'portal-hero-inner' });
   if (parts.greeting) inner.append(buildGreeting(parts.greeting));
   const chatSrc = getMetadata('chatbot-script');
+  let form;
   if (parts.search) {
-    if (chatSrc) inner.append(...buildChat(parts.search, chatSrc));
-    else inner.append(buildSearch(parts.search));
+    if (chatSrc) {
+      const chat = buildChat(parts.search, chatSrc);
+      [form] = chat;
+      inner.append(...chat);
+    } else {
+      form = buildSearch(parts.search);
+      inner.append(form);
+    }
   }
-  if (parts.quicklinks) inner.append(buildQuicklinks(parts.quicklinks));
+  const prompts = parts.prompts && buildPrompts(parts.prompts, form);
+  if (prompts) inner.append(prompts);
   block.replaceChildren(el('div', { class: 'portal-hero-band' }, inner));
+  if (parts.quicklinks) {
+    block.append(el(
+      'div',
+      { class: 'portal-hero-links' },
+      el('div', { class: 'portal-hero-links-inner' }, buildQuicklinks(parts.quicklinks)),
+    ));
+  }
   const notice = parts.notice?.find((c) => c.textContent.trim());
   if (notice) block.append(buildNotice(notice));
 }
