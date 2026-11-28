@@ -18,7 +18,9 @@
  * data-fb-theme. The search row's third cell is the disclaimer.
  *
  * Prompts render as suggested-question chips under the search/chat box;
- * clicking one fills the box and submits it. Quicklinks render in a light
+ * clicking one fills the box and submits it. In chat mode the chips come from
+ * live Knowledge AI suggestions (GET /kai/suggestions, proxied by the edge
+ * function); the authored prompts are the fallback. Quicklinks render in a light
  * strip below the dark band so they don't read as prompts.
  */
 import { getMetadata } from '../../scripts/aem.js';
@@ -214,16 +216,43 @@ function buildChat(cells, src) {
   return [form, el('p', { class: 'portal-hero-disclaimer' }, ...disclaimer)];
 }
 
-function buildPrompts(cells, form) {
-  const title = cells[0]?.textContent.trim() || 'Try asking';
-  const source = cells[1] || cells[0];
-  const items = source.querySelectorAll('li').length
-    ? [...source.querySelectorAll('li')]
-    : [...source.querySelectorAll('p')];
-  const questions = items.map((i) => i.textContent.trim()).filter(Boolean);
-  if (!questions.length || !form) return null;
+const MAX_PROMPTS = 4;
+
+function dedupe(questions) {
+  const seen = new Set();
+  return questions.filter((q) => {
+    const k = q.toLowerCase().replace(/[\s?.!。？！]+$/u, '').replace(/\s+/g, ' ').trim();
+    if (!k || seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  }).slice(0, MAX_PROMPTS);
+}
+
+/* Live Knowledge AI suggestions via the same-origin edge-function proxy. */
+async function fetchSuggestions(chatSrc) {
+  let apiKey;
+  try {
+    apiKey = new URL(chatSrc, window.location.href).searchParams.get('apiKey');
+  } catch { /* invalid URL */ }
+  if (!apiKey) return [];
+  try {
+    const resp = await fetch('/kai/suggestions?limit=5', {
+      headers: { 'x-api-key': apiKey },
+      cache: 'no-store',
+      signal: AbortSignal.timeout(4000),
+    });
+    if (!resp.ok) return [];
+    const json = await resp.json();
+    return dedupe((json.suggestions || [])
+      .map((s) => (typeof s === 'string' ? s : s?.question || '').trim()));
+  } catch {
+    return [];
+  }
+}
+
+function renderChips(list, questions, form) {
   const field = form.querySelector('textarea, input');
-  const chips = questions.map((question) => {
+  list.replaceChildren(...questions.map((question) => {
     const chip = el('button', { type: 'button', class: 'portal-hero-prompt' }, question);
     chip.addEventListener('click', () => {
       field.value = question;
@@ -231,13 +260,44 @@ function buildPrompts(cells, form) {
       form.requestSubmit();
     });
     return el('li', {}, chip);
-  });
-  return el(
+  }));
+}
+
+/* Authored prompts are the fallback; live suggestions replace them when available. */
+function buildPrompts(cells, form, chatSrc) {
+  if (!form) return null;
+  const title = cells?.[0]?.textContent.trim() || 'Try asking';
+  const source = cells?.[1] || cells?.[0];
+  const items = source
+    ? [...source.querySelectorAll(source.querySelector('li') ? 'li' : 'p')]
+    : [];
+  const authored = dedupe(items.map((i) => i.textContent.trim()));
+  if (!authored.length && !chatSrc) return null;
+  const list = el('ul');
+  const wrap = el(
     'div',
     { class: 'portal-hero-prompts' },
     el('p', { class: 'portal-hero-prompts-title' }, title),
-    el('ul', {}, ...chips),
+    list,
   );
+  if (!chatSrc) {
+    renderChips(list, authored, form);
+    return wrap;
+  }
+  wrap.classList.add('is-loading');
+  wrap.setAttribute('aria-busy', 'true');
+  fetchSuggestions(chatSrc).then((live) => {
+    const questions = live.length ? live : authored;
+    wrap.classList.remove('is-loading');
+    wrap.removeAttribute('aria-busy');
+    if (!questions.length) {
+      wrap.remove();
+      return;
+    }
+    wrap.dataset.source = live.length ? 'live' : 'authored';
+    renderChips(list, questions, form);
+  });
+  return wrap;
 }
 
 function buildQuicklinks(cells) {
@@ -285,7 +345,8 @@ export default function decorate(block) {
       inner.append(form);
     }
   }
-  const prompts = parts.prompts && buildPrompts(parts.prompts, form);
+  const prompts = (parts.prompts || chatSrc)
+    && buildPrompts(parts.prompts, form, chatSrc);
   if (prompts) inner.append(prompts);
   block.replaceChildren(el('div', { class: 'portal-hero-band' }, inner));
   if (parts.quicklinks) {
