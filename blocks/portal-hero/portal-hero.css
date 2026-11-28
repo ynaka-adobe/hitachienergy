@@ -213,6 +213,8 @@ main > .section.portal-hero-container > .portal-hero-wrapper {
   font-size: 15px;
   line-height: 20px;
   text-align: left;
+  white-space: normal;
+  max-width: 100%;
   cursor: pointer;
 }
 
