@@ -17,7 +17,8 @@
  * key lives in DA metadata, not in code. Optional `chatbot-theme` sets
  * data-fb-theme. The search row's third cell is the disclaimer.
  *
- * Prompts render as suggested-question chips under the search/chat box;
+ * Prompts render as suggested-question chips (no visible label; the prompts
+ * row's first cell is their accessible name) under the search/chat box;
  * clicking one fills the box and submits it. In chat mode the chips come from
  * live Knowledge AI suggestions (GET /kai/suggestions, proxied by the edge
  * function); the authored prompts are the fallback. Quicklinks render in a light
@@ -274,12 +275,7 @@ function buildPrompts(cells, form, chatSrc) {
   const authored = dedupe(items.map((i) => i.textContent.trim()));
   if (!authored.length && !chatSrc) return null;
   const list = el('ul');
-  const wrap = el(
-    'div',
-    { class: 'portal-hero-prompts' },
-    el('p', { class: 'portal-hero-prompts-title' }, title),
-    list,
-  );
+  const wrap = el('div', { class: 'portal-hero-prompts', role: 'group', 'aria-label': title }, list);
   if (!chatSrc) {
     renderChips(list, authored, form);
     return wrap;
