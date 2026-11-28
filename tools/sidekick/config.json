@@ -40,7 +40,7 @@
     {
       "id": "warranty",
       "title": "Warranty Submissions",
-      "url": "https://da.live/app/ynaka-adobe/hitachienergy/tools/warranty/warranty",
+      "url": "https://author.aem.live/app/ynaka-adobe/hitachienergy/tools/warranty/warranty",
       "environments": ["preview", "live", "edit", "prod"],
       "includePaths": ["**"]
     }
