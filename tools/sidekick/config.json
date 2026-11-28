@@ -46,6 +46,13 @@
       "paletteRect": "top: 40px; right: 0; width: 400px; height: calc(100% - 40px);",
       "environments": ["preview", "live", "edit", "prod"],
       "includePaths": ["**"]
+    },
+    {
+      "id": "warranty",
+      "title": "Warranty Submissions",
+      "url": "https://da.live/app/ynaka-adobe/hitachienergy/tools/warranty/warranty",
+      "environments": ["preview", "live", "edit", "prod"],
+      "includePaths": ["**"]
     }
   ]
 }
