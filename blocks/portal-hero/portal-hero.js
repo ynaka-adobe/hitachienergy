@@ -9,7 +9,14 @@
  * | notice      | No notifications at this time                 |
  * {name} is the signed-in user's first name from /auth/me; otherwise the
  * fallback greeting is shown.
+ *
+ * Chat mode: when page metadata `chatbot-script` is set to the Guides
+ * Knowledge AI widget loader URL (…/flameback-widget-loader.js?apiKey=…), the
+ * search row becomes a chat box that asks the widget via `fb-widget-ask`. The
+ * key lives in DA metadata, not in code. Optional `chatbot-theme` sets
+ * data-fb-theme. The search row's third cell is the disclaimer.
  */
+import { getMetadata } from '../../scripts/aem.js';
 
 function el(tag, attrs = {}, ...children) {
   const node = document.createElement(tag);
@@ -121,6 +128,87 @@ function buildSearch(cells) {
   return form;
 }
 
+let widgetPromise;
+/** Loads the widget loader once; resolves when its iframe reports fb-ready. */
+function loadChatWidget(src) {
+  if (!widgetPromise) {
+    widgetPromise = new Promise((resolve, reject) => {
+      const { origin } = new URL(src, window.location.href);
+      const timer = setTimeout(() => reject(new Error('chat widget timeout')), 15000);
+      window.addEventListener('message', (e) => {
+        if (e.origin !== origin || !e.data || typeof e.data !== 'object') return;
+        if (e.data.type === 'fb-ready') {
+          clearTimeout(timer);
+          resolve();
+        } else if (e.data.type === 'fb-denied') {
+          clearTimeout(timer);
+          reject(new Error('chat widget denied'));
+        }
+      });
+      const script = el('script', { src });
+      const theme = getMetadata('chatbot-theme');
+      if (theme) script.dataset.fbTheme = theme;
+      script.onerror = () => {
+        clearTimeout(timer);
+        reject(new Error('chat widget failed to load'));
+      };
+      document.body.append(script);
+    });
+  }
+  return widgetPromise;
+}
+
+function buildChat(cells, src) {
+  const placeholder = cells[0]?.textContent.trim() || 'Ask me anything';
+  const disclaimer = cells[2]?.textContent.trim()
+    ? [...cells[2].childNodes]
+    : ['Be sure to double-check responses as they may be inaccurate.'];
+  const id = 'portal-chat-input';
+  const input = el('textarea', {
+    id, name: 'question', rows: '2', placeholder,
+  });
+  const label = el('label', { for: id, class: 'portal-hero-sr-only' }, placeholder);
+  const button = el('button', { type: 'submit', 'aria-label': 'Send', disabled: '' });
+  const status = el('p', { class: 'portal-hero-sr-only', role: 'status' });
+  const form = el(
+    'form',
+    { class: 'portal-hero-search portal-hero-chat' },
+    label,
+    input,
+    button,
+    status,
+  );
+
+  const warm = () => loadChatWidget(src).catch(() => {});
+  input.addEventListener('focus', warm, { once: true });
+  setTimeout(warm, 3000);
+  input.addEventListener('input', () => {
+    button.disabled = !input.value.trim();
+  });
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+      e.preventDefault();
+      form.requestSubmit();
+    }
+  });
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const question = input.value.trim();
+    if (!question) return;
+    try {
+      await loadChatWidget(src);
+      document.dispatchEvent(new CustomEvent('fb-widget-ask', { detail: { question } }));
+      input.value = '';
+      button.disabled = true;
+      status.textContent = '';
+    } catch {
+      status.textContent = 'The assistant is unavailable right now. Please try again later.';
+      status.className = 'portal-hero-chat-error';
+    }
+  });
+  return [form, el('p', { class: 'portal-hero-disclaimer' }, ...disclaimer)];
+}
+
 function buildQuicklinks(cells) {
   const title = cells[0]?.textContent.trim() || 'Quicklinks';
   const source = cells[1] || cells[0];
@@ -154,7 +242,11 @@ export default function decorate(block) {
 
   const inner = el('div', { class: 'portal-hero-inner' });
   if (parts.greeting) inner.append(buildGreeting(parts.greeting));
-  if (parts.search) inner.append(buildSearch(parts.search));
+  const chatSrc = getMetadata('chatbot-script');
+  if (parts.search) {
+    if (chatSrc) inner.append(...buildChat(parts.search, chatSrc));
+    else inner.append(buildSearch(parts.search));
+  }
   if (parts.quicklinks) inner.append(buildQuicklinks(parts.quicklinks));
   block.replaceChildren(el('div', { class: 'portal-hero-band' }, inner));
   const notice = parts.notice?.find((c) => c.textContent.trim());
