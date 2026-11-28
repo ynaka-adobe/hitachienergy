@@ -163,14 +163,14 @@ function buildProfilePanel(user, trigger) {
 
 /**
  * Okta sign-in control backed by the edge function's /auth/* routes.
- * Takes over an authored "Login"/"Sign in" tool link (keeping its icon) or
+ * Takes over an authored "Login"/"Sign in"/"ログイン" tool link (keeping its icon) or
  * prepends a new item to the tools list. Signed in, it becomes a profile
  * flyout. Pages stay public either way.
  * @param {HTMLUListElement} list the tools list
  */
 async function decorateAuth(list) {
   const authored = [...list.querySelectorAll('li')]
-    .find((li) => /^(log ?in|sign ?in)$/i.test(li.textContent.trim()));
+    .find((li) => /^(log ?in|sign ?in|ログイン|サインイン)$/i.test(li.textContent.trim()));
   const li = authored || document.createElement('li');
   const icon = li.querySelector('.nav-icon')?.closest('picture') || li.querySelector('.nav-icon');
   li.textContent = '';
