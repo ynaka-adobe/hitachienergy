@@ -112,6 +112,76 @@ main > .section.portal-hero-container > .portal-hero-wrapper {
   background: var(--color-primary-100);
 }
 
+.portal-hero .portal-hero-chat {
+  align-items: flex-end;
+  padding: 12px 12px 12px 16px;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 25%);
+}
+
+.portal-hero .portal-hero-chat textarea {
+  flex: 1;
+  min-width: 0;
+  min-height: 56px;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-gray-900);
+  font: inherit;
+  resize: none;
+}
+
+.portal-hero .portal-hero-chat textarea:focus-visible {
+  outline: none;
+}
+
+.portal-hero .portal-hero-chat:focus-within {
+  outline: 2px solid var(--color-focus-500);
+  outline-offset: 2px;
+}
+
+.portal-hero .portal-hero-search.portal-hero-chat button {
+  margin: 0;
+  background: var(--color-primary-500);
+}
+
+.portal-hero .portal-hero-search.portal-hero-chat button::before {
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M4 4l17 8-17 8 3-8z M7 12h14'/%3E%3C/svg%3E");
+}
+
+.portal-hero .portal-hero-search.portal-hero-chat button:hover {
+  background: var(--color-primary-700, var(--color-gray-900));
+}
+
+.portal-hero .portal-hero-search.portal-hero-chat button:disabled {
+  background: var(--color-gray-300, #ccc);
+  cursor: default;
+}
+
+.portal-hero .portal-hero-chat-error {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin: 6px 0 0;
+  color: var(--color-white);
+  font-size: 14px;
+}
+
+.portal-hero .portal-hero-disclaimer {
+  margin: 10px 0 0;
+  color: var(--color-gray-300, #ccc);
+  font-size: 13px;
+}
+
+.portal-hero .portal-hero-disclaimer a:any-link {
+  color: inherit;
+}
+
+/* Knowledge AI floating launcher (inline-styled by the loader) */
+#fb-widget-loader-root .fb-launcher {
+  background: var(--color-primary-500) !important;
+}
+
 .portal-hero .portal-hero-quicklinks-title {
   margin: 28px 0 12px;
   font-size: 16px;
