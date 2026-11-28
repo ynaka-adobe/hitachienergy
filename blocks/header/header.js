@@ -8,7 +8,7 @@
  */
 
 import { clearAudienceCache } from '../../scripts/audiences.js';
-import { fetchSiteFragment } from '../../scripts/locale.js';
+import { fetchSiteFragment, getLocale } from '../../scripts/locale.js';
 
 const isDesktop = window.matchMedia('(width >= 900px)');
 
@@ -223,6 +223,74 @@ async function decorateAuth(list) {
   });
 }
 
+const LANGUAGES = [
+  {
+    locale: 'en', label: 'EN', lang: 'en', name: 'English',
+  },
+  {
+    locale: 'jp', label: 'JP', lang: 'ja', name: '日本語',
+  },
+];
+
+/**
+ * Path of the equivalent page in another locale folder, or its home outside a locale.
+ * @param {string} locale target locale folder
+ * @returns {string}
+ */
+function localePath(locale) {
+  const current = getLocale();
+  if (!current) return `/${locale}/`;
+  return window.location.pathname.replace(new RegExp(`^/${current}(/|$)`), `/${locale}/`);
+}
+
+/**
+ * Follows a language link to the equivalent page, or to that language's
+ * home page when the equivalent page doesn't exist.
+ * @param {MouseEvent} e
+ */
+async function switchLanguage(e) {
+  if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  const a = e.currentTarget;
+  if (a.getAttribute('aria-current')) return;
+  e.preventDefault();
+  const { pathname } = new URL(a.href);
+  const home = `/${a.dataset.locale}/`;
+  if (pathname === home) {
+    window.location.href = home;
+    return;
+  }
+  const plain = pathname.endsWith('/') ? `${pathname}index.plain.html` : `${pathname}.plain.html`;
+  let ok = false;
+  try {
+    ok = (await fetch(plain, { method: 'HEAD', credentials: 'same-origin' })).ok;
+  } catch { /* treat as missing */ }
+  window.location.href = ok ? pathname : home;
+}
+
+/**
+ * Appends the EN/JP language selector to the tools list.
+ * @param {HTMLUListElement} list the tools list
+ */
+function decorateLanguages(list) {
+  const current = getLocale();
+  const group = el('div', { class: 'nav-lang-options', role: 'group', 'aria-label': 'Language' });
+  LANGUAGES.forEach(({
+    locale, label, lang, name,
+  }) => {
+    const a = el('a', {
+      href: locale === current ? window.location.pathname : localePath(locale),
+      hreflang: lang,
+      lang,
+      title: name,
+      'data-locale': locale,
+    }, label);
+    if (locale === current) a.setAttribute('aria-current', 'true');
+    a.addEventListener('click', switchLanguage);
+    group.append(a);
+  });
+  list.append(el('li', { class: 'nav-lang' }, group));
+}
+
 function toggleMenu(header, forceOpen) {
   const open = forceOpen ?? header.getAttribute('aria-expanded') !== 'true';
   header.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -277,6 +345,7 @@ export default async function decorate(block) {
   const toolsList = toolsSection
     ? buildLinkList(toolsSection, 'nav-tools-list')
     : Object.assign(document.createElement('ul'), { className: 'nav-tools-list' });
+  decorateLanguages(toolsList);
   tools.append(toolsList);
   topInner.append(tools);
   decorateAuth(toolsList).catch((e) => {
